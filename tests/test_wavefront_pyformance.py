@@ -1,8 +1,8 @@
 from unittest import TestCase
 import unittest
 from pyformance import MetricsRegistry
-import delta
-from wavefront_reporter import WavefrontReporter, WavefrontProxyReporter, WavefrontDirectReporter
+from wavefront_pyformance import delta
+from wavefront_pyformance.wavefront_reporter import WavefrontReporter, WavefrontProxyReporter, WavefrontDirectReporter
 import time
 
 
