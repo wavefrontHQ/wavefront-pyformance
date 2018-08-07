@@ -1,0 +1,4 @@
+dist/*
+build/*
+wavefront_pyformance.egg-info
+*.pyc
