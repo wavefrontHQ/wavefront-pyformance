@@ -29,7 +29,7 @@ setup(
     version=VERSION,
     description="Wavefront Pyformance Library",
     author_email="",
-    url="https://github.com/wavefrontHQ/python-client/tree/master/wavefront_pyformance",
+    url="https://github.com/wavefrontHQ/wavefront-pyformance",
     keywords=["Wavefront Pyformance", "Wavefront"],
     install_requires=REQUIRES,
     packages=find_packages(),
