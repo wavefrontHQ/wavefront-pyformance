@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 import sys
 import socket
 import requests
@@ -86,7 +86,7 @@ class WavefrontProxyReporter(WavefrontReporter):
             if not self.proxy_socket:
                 self._connect()
             for line in metrics:
-                self.proxy_socket.send(line.encode('utf-8') + "\n")
+                self.proxy_socket.send(line.encode('utf-8') + b'\n')
         except socket.error as e:
             if reconnect:
                 self.proxy_socket = None
