@@ -1,5 +1,7 @@
-"""Delta Counter implementation and helper functions."""
 # -*- coding: utf-8 -*-
+"""
+Delta Counter implementation and helper functions.
+"""
 
 from __future__ import unicode_literals
 from pyformance import meters

@@ -1,5 +1,7 @@
-"""WavefrontDirectReporter and WavefrontProxyReporter implementations."""
 # -*- coding: utf-8 -*-
+"""
+WavefrontDirectReporter and WavefrontProxyReporter implementations.
+"""
 
 from __future__ import unicode_literals
 
