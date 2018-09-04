@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from pyformance.meters import Counter
 
 
@@ -47,8 +48,8 @@ class DeltaCounter(Counter):
     Differs from a counter in that it is reset in the WavefrontReporter every time the value is reported.
     """
 
-    DELTA_PREFIX = u"\u2206"
-    ALT_DELTA_PREFIX = u"\u0394"
+    DELTA_PREFIX = '∆'  # u"\u2206"
+    ALT_DELTA_PREFIX = 'Δ'  # u"\u0394"
 
     def __init__(self):
         super(DeltaCounter, self).__init__()
