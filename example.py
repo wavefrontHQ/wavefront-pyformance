@@ -1,5 +1,6 @@
 from pyformance import MetricsRegistry
-from wavefront_pyformance.wavefront_reporter import WavefrontReporter, WavefrontProxyReporter, WavefrontDirectReporter
+from wavefront_pyformance.wavefront_reporter import \
+    WavefrontProxyReporter, WavefrontDirectReporter
 from wavefront_pyformance import delta
 import time
 import sys
@@ -8,8 +9,16 @@ import sys
 def report_metrics(host, server, token):
     reg = MetricsRegistry()
 
-    wf_proxy_reporter = WavefrontProxyReporter(host=host, port=2878, registry=reg, source="wavefront-pyformance-example", tags={"key1":"val1", "key2":"val2"}, prefix="python.proxy.")
-    wf_direct_reporter = WavefrontDirectReporter(server=server, token=token, registry=reg, source="wavefront-pyformance-exmaple", tags={"key1":"val1", "key2": "val2"}, prefix="python.direct.")
+    wf_proxy_reporter = WavefrontProxyReporter(
+        host=host, port=2878, registry=reg,
+        source="wavefront-pyformance-example",
+        tags={"key1": "val1", "key2": "val2"},
+        prefix="python.proxy.")
+    wf_direct_reporter = WavefrontDirectReporter(
+        server=server, token=token, registry=reg,
+        source="wavefront-pyformance-exmaple",
+        tags={"key1": "val1", "key2": "val2"},
+        prefix="python.direct.")
 
     # counter
     c1 = reg.counter("foo_count")
@@ -39,9 +48,10 @@ def report_metrics(host, server, token):
     h1.add(1.0)
     h1.add(1.5)
 
+    wf_direct_reporter.report_now()
+    wf_direct_reporter.stop()
     wf_proxy_reporter.report_now()
     wf_proxy_reporter.stop()
-    wf_direct_reporter.report_now()
 
 
 if __name__ == "__main__":
@@ -49,4 +59,6 @@ if __name__ == "__main__":
     host = sys.argv[1]
     server = sys.argv[2]
     token = sys.argv[3]
-    report_metrics(host, server, token)
+    while True:
+        report_metrics(host, server, token)
+        time.sleep(1)

@@ -22,7 +22,7 @@ VERSION = "0.9.2"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = ["pyformance >= 0.4", "requests >= 2.18.4"]
+REQUIRES = ["pyformance >= 0.4", "wavefront_python_sdk"]
 
 setup(
     name=NAME,

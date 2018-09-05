@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-WavefrontDirectReporter and WavefrontProxyReporter implementations.
-"""
+"""WavefrontDirectReporter and WavefrontProxyReporter implementations."""
 
 from __future__ import unicode_literals
-
-import logging
-import socket
-import requests
-
 from pyformance.reporters import reporter
+from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
 
 try:
@@ -24,50 +18,40 @@ class WavefrontReporter(reporter.Reporter):
     # pylint: disable=too-many-arguments
     def __init__(self, source='wavefront-pyformance', registry=None,
                  reporting_interval=10, clock=None, prefix='', tags=None):
-        """Run parent class __init__ and do Wavefront specific set up."""
+        """Construct Wavefront Reporter."""
         super(WavefrontReporter, self).__init__(
-            registry=registry,
-            reporting_interval=reporting_interval,
+            registry=registry, reporting_interval=reporting_interval,
             clock=clock)
+        self.wavefront_client = None
         self.source = source
         self.prefix = prefix
-        tags = tags or {}
-        # pylint: disable=invalid-name
-        self.tagStr = ' '.join('"%s"="%s"' % (k, v) for k, v in tags.items())
+        self.tags = tags or {}
 
     def report_now(self, registry=None, timestamp=None):
-        """Raise error if method is not implemented by derived class."""
-        raise NotImplementedError('use WavefrontProxyReporter'
-                                  ' or WavefrontDirectReporter')
-
-    def _collect_metrics(self, registry, timestamp=None):
+        """Collect metrics from registry and report them to Wavefront."""
+        registry = registry or self.registry
         metrics = registry.dump_metrics()
-        metrics_data = []
         for key in metrics.keys():
             is_delta = delta.is_delta_counter(key, registry)
             for value_key in metrics[key].keys():
-                if is_delta:  # decrement delta counter
+                if is_delta:
+                    self.wavefront_client.send_delta_counter(
+                        name=delta.get_delta_name(self.prefix, key, value_key),
+                        value=metrics[key][value_key], source=self.source,
+                        tags=self.tags
+                    )
+                    # decrement delta counter
                     registry.counter(key).dec(metrics[key][value_key])
-                metric_name = self._get_metric_name(self.prefix, key,
-                                                    value_key,
-                                                    is_delta=is_delta)
-                metric_line = self._get_metric_line(metric_name,
-                                                    metrics[key][value_key],
-                                                    timestamp)
-                metrics_data.append(metric_line)
-        return metrics_data
+                else:
+                    self.wavefront_client.send_metric(
+                        name='{}{}.{}'.format(self.prefix, key, value_key),
+                        value=metrics[key][value_key], timestamp=timestamp,
+                        source=self.source, tags=self.tags)
 
-    def _get_metric_line(self, name, value, timestamp):
-        if timestamp:
-            return '{} {} {} source="{}" {}'.format(name, value, timestamp,
-                                                    self.source, self.tagStr)
-        return '{} {} source="{}" {}'.format(name, value, self.source,
-                                             self.tagStr)
-
-    # pylint: disable=no-self-use
-    def _get_metric_name(self, prefix, name, value_key, is_delta=False):
-        return (delta.get_delta_name(prefix, name, value_key) if is_delta
-                else '{}{}.{}'.format(prefix, name, value_key))
+    def stop(self):
+        """Stop pyformance and wavefront reporter."""
+        super(WavefrontReporter, self).stop()
+        self.wavefront_client.close()
 
 
 class WavefrontProxyReporter(WavefrontReporter):
@@ -79,51 +63,17 @@ class WavefrontProxyReporter(WavefrontReporter):
                  prefix='proxy.', tags=None):
         """Run parent __init__ and do proxy reporter specific setup."""
         super(WavefrontProxyReporter, self).__init__(
-            source=source,
-            registry=registry,
-            reporting_interval=reporting_interval,
-            clock=clock,
-            prefix=prefix,
+            source=source, registry=registry,
+            reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags)
-        self.host = host
-        self.port = port
-        self.socket_factory = socket.socket
-        self.proxy_socket = None
+        self.wavefront_client = WavefrontProxyClient(host=host,
+                                                     metrics_port=port,
+                                                     distribution_port=None,
+                                                     tracing_port=None)
 
     def report_now(self, registry=None, timestamp=None):
-        """Collect metrics from the registry and report to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
-        metrics = self._collect_metrics(registry or self.registry, timestamp)
-        if metrics:
-            self._report_points(metrics)
-
-    def stop(self):
-        """Stop reporting loop and close the proxy socket if open."""
-        super(WavefrontProxyReporter, self).stop()
-        if self.proxy_socket:
-            self.proxy_socket.close()
-
-    def _report_points(self, metrics, reconnect=True):
-        try:
-            if not self.proxy_socket:
-                self._connect()
-            for line in metrics:
-                self.proxy_socket.send(line.encode('utf-8') + b'\n')
-        except socket.error as socket_error:
-            if reconnect:
-                self.proxy_socket = None
-                self._report_points(metrics, reconnect=False)
-            else:
-                logging.error('error reporting to wavefront proxy: %s',
-                              socket_error)
-        except Exception as generic_exception:  # pylint: disable=broad-except
-            logging.error('error reporting to wavefront proxy: %s',
-                          generic_exception)
-
-    def _connect(self):
-        self.proxy_socket = self.socket_factory(socket.AF_INET,
-                                                socket.SOCK_STREAM)
-        self.proxy_socket.connect((self.host, self.port))
+        super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
 
 class WavefrontDirectReporter(WavefrontReporter):
@@ -139,46 +89,25 @@ class WavefrontDirectReporter(WavefrontReporter):
                  prefix='direct.', tags=None):
         """Run parent __init__ and do direct reporter specific setup."""
         super(WavefrontDirectReporter, self).__init__(
-            source=source,
-            registry=registry,
-            reporting_interval=reporting_interval,
-            clock=clock,
-            prefix=prefix,
+            source=source, registry=registry,
+            reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags)
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000
-        self.headers = {'Content-Type': 'text/plain',
-                        'Authorization': 'Bearer ' + token}
-        self.params = {'f': 'graphite_v2'}
+        self.wavefront_client = WavefrontDirectClient(
+            self.server, token, batch_size=self.batch_size,
+            flush_interval_seconds=reporting_interval)
 
-    def _validate_url(self, server):  # pylint: disable=no-self-use
+    @staticmethod
+    def _validate_url(server):  # pylint: disable=no-self-use
+        """Validate URL of server."""
         parsed_url = urlparse(server)
         if not all((parsed_url.scheme, parsed_url.netloc)):
             raise ValueError('invalid server url')
         return server
 
     def report_now(self, registry=None, timestamp=None):
-        """Collect metricts from registry and report them to Wavefront."""
-        metrics = self._collect_metrics(registry or self.registry)
-        if metrics:
-            # limit to batch_size per api call
-            chunks = self._get_chunks(metrics, self.batch_size)
-            for chunk in chunks:
-                metrics_str = '\n'.join(chunk).encode('utf-8')
-                self._report_points(metrics_str)
-
-    def _get_chunks(self, metrics, chunk_size):  # pylint: disable=no-self-use
-        """Return a lazy list generator."""
-        for i in range(0, len(metrics), chunk_size):
-            yield metrics[i:i+chunk_size]
-
-    def _report_points(self, points):
-        try:
-            response = requests.post(self.server + '/report',
-                                     params=self.params,
-                                     headers=self.headers,
-                                     data=points)
-            response.raise_for_status()
-        except Exception as generic_exception:  # pylint: disable=broad-except
-            logging.error(generic_exception)
+        """Collect metrics from registry and report them to Wavefront."""
+        super(WavefrontDirectReporter, self).report_now(registry, timestamp)
+        self.wavefront_client.flush_now()
