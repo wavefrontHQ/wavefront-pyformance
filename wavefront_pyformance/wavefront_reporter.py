@@ -29,7 +29,6 @@ class WavefrontReporter(reporter.Reporter):
 
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
-        timestamp = timestamp or int(round(self.clock.time()))
         registry = registry or self.registry
         metrics = registry.dump_metrics()
         for key in metrics.keys():
@@ -71,6 +70,10 @@ class WavefrontProxyReporter(WavefrontReporter):
                                                      metrics_port=port,
                                                      distribution_port=None,
                                                      tracing_port=None)
+
+    def report_now(self, registry=None, timestamp=None):
+        timestamp = timestamp or int(round(self.clock.time()))
+        super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
 
 class WavefrontDirectReporter(WavefrontReporter):
