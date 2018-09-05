@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Delta Counter implementation and helper functions.
-"""
+"""Delta Counter implementation and helper functions."""
 
 from __future__ import unicode_literals
 from pyformance import meters
@@ -62,5 +60,5 @@ class DeltaCounter(meters.Counter):
     every time the value is reported.
     """
 
-    DELTA_PREFIX = u"\u2206"
-    ALT_DELTA_PREFIX = u"\u0394"
+    DELTA_PREFIX = u"\u2206"  # '∆'
+    ALT_DELTA_PREFIX = u"\u0394"  # 'Δ'

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-WavefrontDirectReporter and WavefrontProxyReporter implementations.
-"""
+"""WavefrontDirectReporter and WavefrontProxyReporter implementations."""
 
 from __future__ import unicode_literals
 from pyformance.reporters import reporter
@@ -18,9 +16,9 @@ class WavefrontReporter(reporter.Reporter):
     """Base reporter for reporting data in Wavefront format."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, source='wavefront-pyformance',
-                 registry=None,
+    def __init__(self, source='wavefront-pyformance', registry=None,
                  reporting_interval=10, clock=None, prefix='', tags=None):
+        """Construct Wavefront Reporter."""
         super(WavefrontReporter, self).__init__(
             registry=registry, reporting_interval=reporting_interval,
             clock=clock)
@@ -30,6 +28,7 @@ class WavefrontReporter(reporter.Reporter):
         self.tags = tags or {}
 
     def report_now(self, registry=None, timestamp=None):
+        """Collect metrics from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
         registry = registry or self.registry
         metrics = registry.dump_metrics()
@@ -73,10 +72,6 @@ class WavefrontProxyReporter(WavefrontReporter):
                                                      distribution_port=None,
                                                      tracing_port=None)
 
-    def report_now(self, registry=None, timestamp=None):
-        """Collect metrics from the registry and report to Wavefront."""
-        super(WavefrontProxyReporter, self).report_now(registry, timestamp)
-
 
 class WavefrontDirectReporter(WavefrontReporter):
     """Direct Reporter for sending metrics using direct ingestion.
@@ -89,19 +84,21 @@ class WavefrontDirectReporter(WavefrontReporter):
     def __init__(self, server, token, source='wavefront-pyformance',
                  registry=None, reporting_interval=10, clock=None,
                  prefix='direct.', tags=None):
-        self.server = self._validate_url(server)
-        self.token = token
-        self.batch_size = 10000
+        """Run parent __init__ and do direct reporter specific setup."""
         super(WavefrontDirectReporter, self).__init__(
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags)
+        self.server = self._validate_url(server)
+        self.token = token
+        self.batch_size = 10000
         self.wavefront_client = WavefrontDirectClient(
             self.server, token, batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
 
     @staticmethod
     def _validate_url(server):  # pylint: disable=no-self-use
+        """Validate URL of server."""
         parsed_url = urlparse(server)
         if not all((parsed_url.scheme, parsed_url.netloc)):
             raise ValueError('invalid server url')
