@@ -8,7 +8,7 @@ python:
 
 install:
   - pip install pyformance
-  - pip install requests
+  - pip install git+https://github.com/wavefrontHQ/wavefront-python-sdk.git
 
 script:
   - python -m unittest discover
