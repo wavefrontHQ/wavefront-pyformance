@@ -18,13 +18,13 @@ class WavefrontReporter(reporter.Reporter):
     """Base reporter for reporting data in Wavefront format."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, wavefront_client, source="wavefront-pyformance",
+    def __init__(self, source='wavefront-pyformance',
                  registry=None,
-                 reporting_interval=10, clock=None, prefix="", tags=None):
+                 reporting_interval=10, clock=None, prefix='', tags=None):
         super(WavefrontReporter, self).__init__(
             registry=registry, reporting_interval=reporting_interval,
             clock=clock)
-        self.wavefront_client = wavefront_client
+        self.wavefront_client = None
         self.source = source
         self.prefix = prefix
         self.tags = tags or {}
@@ -46,11 +46,12 @@ class WavefrontReporter(reporter.Reporter):
                     registry.counter(key).dec(metrics[key][value_key])
                 else:
                     self.wavefront_client.send_metric(
-                        name="%s%s.%s" % (self.prefix, key, value_key),
+                        name='{}{}.{}'.format(self.prefix, key, value_key),
                         value=metrics[key][value_key], timestamp=timestamp,
                         source=self.source, tags=self.tags)
 
     def stop(self):
+        """Stop pyformance and wavefront reporter."""
         super(WavefrontReporter, self).stop()
         self.wavefront_client.close()
 
@@ -59,24 +60,21 @@ class WavefrontProxyReporter(WavefrontReporter):
     """Requires a host and port to report data to a Wavefront proxy."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, host, port=2878, source="wavefront-pyformance",
+    def __init__(self, host, port=2878, source='wavefront-pyformance',
                  registry=None, reporting_interval=10, clock=None,
-                 prefix="proxy.", tags=None):
-        tags = tags or {}
-        self.proxy_client = WavefrontProxyClient(host=host,
-                                                 metrics_port=port,
-                                                 distribution_port=None,
-                                                 tracing_port=None)
+                 prefix='proxy.', tags=None):
         """Run parent __init__ and do proxy reporter specific setup."""
         super(WavefrontProxyReporter, self).__init__(
-            wavefront_client=self.proxy_client, source=source,
-            registry=registry, reporting_interval=reporting_interval,
-            clock=clock, prefix=prefix, tags=tags)
+            source=source, registry=registry,
+            reporting_interval=reporting_interval, clock=clock, prefix=prefix,
+            tags=tags)
+        self.wavefront_client = WavefrontProxyClient(host=host,
+                                                     metrics_port=port,
+                                                     distribution_port=None,
+                                                     tracing_port=None)
 
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from the registry and report to Wavefront."""
-        timestamp = timestamp or int(round(self.clock.time()))
-        registry = registry or self.registry
         super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
 
@@ -88,20 +86,19 @@ class WavefrontDirectReporter(WavefrontReporter):
     """
 
     # pylint: disable=too-many-arguments
-    def __init__(self, server, token, source="wavefront-pyformance",
+    def __init__(self, server, token, source='wavefront-pyformance',
                  registry=None, reporting_interval=10, clock=None,
-                 prefix="direct.", tags=None):
-        tags = tags or {}
+                 prefix='direct.', tags=None):
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000
-        self.direct_client = WavefrontDirectClient(
+        super(WavefrontDirectReporter, self).__init__(
+            source=source, registry=registry,
+            reporting_interval=reporting_interval, clock=clock, prefix=prefix,
+            tags=tags)
+        self.wavefront_client = WavefrontDirectClient(
             self.server, token, batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
-        super(WavefrontDirectReporter, self).__init__(
-            wavefront_client=self.direct_client, source=source,
-            registry=registry, reporting_interval=reporting_interval,
-            clock=clock, prefix=prefix, tags=tags)
 
     @staticmethod
     def _validate_url(server):  # pylint: disable=no-self-use
@@ -111,8 +108,6 @@ class WavefrontDirectReporter(WavefrontReporter):
         return server
 
     def report_now(self, registry=None, timestamp=None):
-        """Collect metricts from registry and report them to Wavefront."""
-        timestamp = timestamp or int(round(self.clock.time()))
-        registry = registry or self.registry
+        """Collect metrics from registry and report them to Wavefront."""
         super(WavefrontDirectReporter, self).report_now(registry, timestamp)
-        self.direct_client.flush_now()
+        self.wavefront_client.flush_now()

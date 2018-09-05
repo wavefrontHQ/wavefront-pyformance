@@ -62,8 +62,5 @@ class DeltaCounter(meters.Counter):
     every time the value is reported.
     """
 
-    DELTA_PREFIX = '∆'  # u"\u2206"
-    ALT_DELTA_PREFIX = 'Δ'  # u"\u0394"
-
-    def __init__(self):
-        super(DeltaCounter, self).__init__()
+    DELTA_PREFIX = u"\u2206"
+    ALT_DELTA_PREFIX = u"\u0394"
