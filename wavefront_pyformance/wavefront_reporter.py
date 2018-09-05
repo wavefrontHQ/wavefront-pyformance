@@ -4,8 +4,7 @@ WavefrontDirectReporter and WavefrontProxyReporter implementations.
 """
 
 from __future__ import unicode_literals
-import sys
-from pyformance.reporters.reporter import Reporter
+from pyformance.reporters import reporter
 from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
 
@@ -49,7 +48,7 @@ class WavefrontReporter(reporter.Reporter):
                     self.wavefront_client.send_metric(
                         name="%s%s.%s" % (self.prefix, key, value_key),
                         value=metrics[key][value_key], timestamp=timestamp,
-                        source=self.source,  tags=self.tags)
+                        source=self.source, tags=self.tags)
 
     def stop(self):
         super(WavefrontReporter, self).stop()
@@ -80,10 +79,6 @@ class WavefrontProxyReporter(WavefrontReporter):
         registry = registry or self.registry
         super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
-    def stop(self):
-        """Stop reporting loop and close the proxy socket if open."""
-        super(WavefrontProxyReporter, self).stop()
-
 
 class WavefrontDirectReporter(WavefrontReporter):
     """Direct Reporter for sending metrics using direct ingestion.
@@ -107,9 +102,6 @@ class WavefrontDirectReporter(WavefrontReporter):
             wavefront_client=self.direct_client, source=source,
             registry=registry, reporting_interval=reporting_interval,
             clock=clock, prefix=prefix, tags=tags)
-
-    def stop(self):
-        super(WavefrontDirectReporter, self).stop()
 
     @staticmethod
     def _validate_url(server):  # pylint: disable=no-self-use
