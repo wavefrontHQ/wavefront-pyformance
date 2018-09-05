@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, unicode_literals
+"""
+WavefrontDirectReporter and WavefrontProxyReporter implementations.
+"""
+
+from __future__ import unicode_literals
 import sys
 from pyformance.reporters.reporter import Reporter
 from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
 
-if sys.version_info[0] > 2:
+try:
     from urllib.parse import urlparse
-else:
+except ImportError:
     from urlparse import urlparse
 
 
-class WavefrontReporter(Reporter):
-    """
-    Base reporter for reporting data in Wavefront format.
-    """
+class WavefrontReporter(reporter.Reporter):
+    """Base reporter for reporting data in Wavefront format."""
 
+    # pylint: disable=too-many-arguments
     def __init__(self, wavefront_client, source="wavefront-pyformance",
                  registry=None,
                  reporting_interval=10, clock=None, prefix="", tags=None):
@@ -54,10 +57,9 @@ class WavefrontReporter(Reporter):
 
 
 class WavefrontProxyReporter(WavefrontReporter):
-    """
-    This reporter requires a host and port to report data to a Wavefront proxy.
-    """
+    """Requires a host and port to report data to a Wavefront proxy."""
 
+    # pylint: disable=too-many-arguments
     def __init__(self, host, port=2878, source="wavefront-pyformance",
                  registry=None, reporting_interval=10, clock=None,
                  prefix="proxy.", tags=None):
@@ -66,27 +68,31 @@ class WavefrontProxyReporter(WavefrontReporter):
                                                  metrics_port=port,
                                                  distribution_port=None,
                                                  tracing_port=None)
+        """Run parent __init__ and do proxy reporter specific setup."""
         super(WavefrontProxyReporter, self).__init__(
             wavefront_client=self.proxy_client, source=source,
             registry=registry, reporting_interval=reporting_interval,
             clock=clock, prefix=prefix, tags=tags)
 
     def report_now(self, registry=None, timestamp=None):
+        """Collect metrics from the registry and report to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
         registry = registry or self.registry
         super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
     def stop(self):
+        """Stop reporting loop and close the proxy socket if open."""
         super(WavefrontProxyReporter, self).stop()
 
 
 class WavefrontDirectReporter(WavefrontReporter):
-    """
-    This reporter report data directly to a Wavefront server.
+    """Direct Reporter for sending metrics using direct ingestion.
 
-    Requires a server and a token.
+    This reporter requires a server and a token to report data
+    directly to a Wavefront server.
     """
 
+    # pylint: disable=too-many-arguments
     def __init__(self, server, token, source="wavefront-pyformance",
                  registry=None, reporting_interval=10, clock=None,
                  prefix="direct.", tags=None):
@@ -106,13 +112,14 @@ class WavefrontDirectReporter(WavefrontReporter):
         super(WavefrontDirectReporter, self).stop()
 
     @staticmethod
-    def _validate_url(server):
+    def _validate_url(server):  # pylint: disable=no-self-use
         parsed_url = urlparse(server)
-        if not all([parsed_url.scheme, parsed_url.netloc]):
-            raise ValueError("invalid server url")
+        if not all((parsed_url.scheme, parsed_url.netloc)):
+            raise ValueError('invalid server url')
         return server
 
     def report_now(self, registry=None, timestamp=None):
+        """Collect metricts from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
         registry = registry or self.registry
         super(WavefrontDirectReporter, self).report_now(registry, timestamp)
