@@ -1,12 +1,12 @@
 from unittest import TestCase
 import unittest
-from pyformance import MetricsRegistry
+from wavefront_pyformance.tagged_registry import TaggedRegistry
 from wavefront_pyformance import delta
 
 
 class TestDelta(TestCase):
     def test_delta_counter(self):
-        reg = MetricsRegistry()
+        reg = TaggedRegistry()
         counter = delta.delta_counter(reg, "foo")
         assert(isinstance(counter, delta.DeltaCounter))
 

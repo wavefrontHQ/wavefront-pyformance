@@ -27,7 +27,7 @@ def delta_counter(registry, name, tags=None):
         registry.add(name, ret_counter)
         return ret_counter
     except LookupError:
-        return registry.counter(name. tags)
+        return registry.counter(name, tags)
 
 
 def is_delta_counter(name, registry):
