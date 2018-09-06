@@ -30,6 +30,7 @@ class WavefrontReporter(reporter.Reporter):
 
     @staticmethod
     def decode_key(key):
+        """Decode encoded key into original key and dict of tags."""
         if '-tags=' in key:
             decoded_str = key.split('-tags=')
             return decoded_str[0], ast.literal_eval(decoded_str[1])
@@ -87,6 +88,7 @@ class WavefrontProxyReporter(WavefrontReporter):
                                                      tracing_port=None)
 
     def report_now(self, registry=None, timestamp=None):
+        """Collect metrics from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
         super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
