@@ -1,4 +1,4 @@
-from pyformance import MetricsRegistry
+from wavefront_pyformance.tagged_registry import TaggedRegistry
 from wavefront_pyformance.wavefront_reporter import \
     WavefrontProxyReporter, WavefrontDirectReporter
 from wavefront_pyformance import delta
@@ -7,7 +7,7 @@ import sys
 
 
 def report_metrics(host, server, token):
-    reg = MetricsRegistry()
+    reg = TaggedRegistry()
 
     wf_proxy_reporter = WavefrontProxyReporter(
         host=host, port=2878, registry=reg,
@@ -21,30 +21,31 @@ def report_metrics(host, server, token):
         prefix="python.direct.")
 
     # counter
-    c1 = reg.counter("foo_count")
+    c1 = reg.counter("foo_count", tags={"counter_key": "counter_val"})
     c1.inc()
 
     # delta counter
-    d1 = delta.delta_counter(reg, "foo_delta_count")
+    d1 = delta.delta_counter(reg, "foo_delta_count",
+                             tags={"delta_key": "delta_val"})
     d1.inc()
     d1.inc()
 
     # gauge
-    g1 = reg.gauge("foo_gauge")
+    g1 = reg.gauge("foo_gauge", tags={"gauge_key": "gauge_val"})
     g1.set_value(2)
 
     # meter
-    m1 = reg.meter("foo_meter")
+    m1 = reg.meter("foo_meter", tags={"meter_key": "meter_val"})
     m1.mark()
 
     # timer
-    t1 = reg.timer("foo_timer")
+    t1 = reg.timer("foo_timer", tags={"timer_key": "timer_val"})
     timer_ctx = t1.time()
     time.sleep(3)
     timer_ctx.stop()
 
     # histogram
-    h1 = reg.histogram("foo_histogram")
+    h1 = reg.histogram("foo_histogram", tags={"hist_key": "hist_val"})
     h1.add(1.0)
     h1.add(1.5)
 
