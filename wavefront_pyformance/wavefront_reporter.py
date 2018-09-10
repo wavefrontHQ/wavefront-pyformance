@@ -2,7 +2,7 @@
 """WavefrontDirectReporter and WavefrontProxyReporter implementations."""
 
 from __future__ import unicode_literals
-import ast
+import json
 from pyformance.reporters import reporter
 from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
@@ -33,7 +33,7 @@ class WavefrontReporter(reporter.Reporter):
         """Decode encoded key into original key and dict of tags."""
         if '-tags=' in key:
             decoded_str = key.split('-tags=')
-            return decoded_str[0], ast.literal_eval(decoded_str[1])
+            return decoded_str[0], json.loads(decoded_str[1])
         return key, None
 
     def report_now(self, registry=None, timestamp=None):
