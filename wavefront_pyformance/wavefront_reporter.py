@@ -44,9 +44,10 @@ class WavefrontReporter(reporter.Reporter):
             is_delta = delta.is_delta_counter(key, registry)
             for value_key in metrics[key].keys():
                 metric_name, metric_tags = self.decode_key(key)
-                tags = {}
-                tags.update(self.tags)
+                tags = self.tags
                 if metric_tags:
+                    tags = {}
+                    tags.update(self.tags)
                     tags.update(metric_tags)
                 if is_delta:
                     self.wavefront_client.send_delta_counter(
