@@ -21,13 +21,19 @@ def delta_counter(registry, name, tags=None):
 
     name = (name if _has_delta_prefix(name)
             else DeltaCounter.DELTA_PREFIX + name)
+
+    is_tagged_registry = isinstance(registry, TaggedRegistry)
+
     try:
         ret_counter = DeltaCounter()
-        name = TaggedRegistry.encode_key(name, tags)
+        if is_tagged_registry:
+            name = TaggedRegistry.encode_key(name, tags)
         registry.add(name, ret_counter)
         return ret_counter
     except LookupError:
-        return registry.counter(name, tags)
+        if is_tagged_registry:
+            return registry.counter(name, tags)
+        return registry.counter(name)
 
 
 def is_delta_counter(name, registry):
