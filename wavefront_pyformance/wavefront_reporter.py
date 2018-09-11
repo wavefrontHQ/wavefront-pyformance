@@ -32,8 +32,8 @@ class WavefrontReporter(reporter.Reporter):
     def decode_key(key):
         """Decode encoded key into original key and dict of tags."""
         if '-tags=' in key:
-            decoded_str = key.split('-tags=')
-            return decoded_str[0], json.loads(decoded_str[1])
+            key_name, tags_json = key.split('-tags=')
+            return key_name, json.loads(tags_json)
         return key, None
 
     def report_now(self, registry=None, timestamp=None):
@@ -46,8 +46,7 @@ class WavefrontReporter(reporter.Reporter):
                 metric_name, metric_tags = self.decode_key(key)
                 tags = self.tags
                 if metric_tags:
-                    tags = {}
-                    tags.update(self.tags)
+                    tags = self.tags.copy()
                     tags.update(metric_tags)
                 if is_delta:
                     self.wavefront_client.send_delta_counter(
