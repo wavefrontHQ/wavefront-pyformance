@@ -3,9 +3,10 @@
 
 from __future__ import unicode_literals
 from pyformance import meters
+from wavefront_pyformance.tagged_registry import TaggedRegistry
 
 
-def delta_counter(registry, name):
+def delta_counter(registry, name, tags=None):
     """
     Register a DeltaCounter with the given registry and returns the instance.
 
@@ -20,11 +21,18 @@ def delta_counter(registry, name):
 
     name = (name if _has_delta_prefix(name)
             else DeltaCounter.DELTA_PREFIX + name)
+
+    is_tagged_registry = isinstance(registry, TaggedRegistry)
+
     try:
         ret_counter = DeltaCounter()
+        if is_tagged_registry:
+            name = TaggedRegistry.encode_key(name, tags)
         registry.add(name, ret_counter)
         return ret_counter
     except LookupError:
+        if is_tagged_registry:
+            return registry.counter(name, tags)
         return registry.counter(name)
 
 

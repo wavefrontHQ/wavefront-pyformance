@@ -2,6 +2,7 @@
 """WavefrontDirectReporter and WavefrontProxyReporter implementations."""
 
 from __future__ import unicode_literals
+import json
 from pyformance.reporters import reporter
 from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
@@ -27,6 +28,14 @@ class WavefrontReporter(reporter.Reporter):
         self.prefix = prefix
         self.tags = tags or {}
 
+    @staticmethod
+    def decode_key(key):
+        """Decode encoded key into original key and dict of tags."""
+        if '-tags=' in key:
+            key_name, tags_json = key.split('-tags=')
+            return key_name, json.loads(tags_json)
+        return key, None
+
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
         registry = registry or self.registry
@@ -34,19 +43,26 @@ class WavefrontReporter(reporter.Reporter):
         for key in metrics.keys():
             is_delta = delta.is_delta_counter(key, registry)
             for value_key in metrics[key].keys():
+                metric_name, metric_tags = self.decode_key(key)
+                tags = self.tags
+                if metric_tags:
+                    tags = self.tags.copy()
+                    tags.update(metric_tags)
                 if is_delta:
                     self.wavefront_client.send_delta_counter(
-                        name=delta.get_delta_name(self.prefix, key, value_key),
+                        name=delta.get_delta_name(self.prefix, metric_name,
+                                                  value_key),
                         value=metrics[key][value_key], source=self.source,
-                        tags=self.tags
+                        tags=tags
                     )
                     # decrement delta counter
                     registry.counter(key).dec(metrics[key][value_key])
                 else:
                     self.wavefront_client.send_metric(
-                        name='{}{}.{}'.format(self.prefix, key, value_key),
+                        name='{}{}.{}'.format(self.prefix, metric_name,
+                                              value_key),
                         value=metrics[key][value_key], timestamp=timestamp,
-                        source=self.source, tags=self.tags)
+                        source=self.source, tags=tags)
 
     def stop(self):
         """Stop pyformance and wavefront reporter."""
@@ -72,6 +88,7 @@ class WavefrontProxyReporter(WavefrontReporter):
                                                      tracing_port=None)
 
     def report_now(self, registry=None, timestamp=None):
+        """Collect metrics from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
         super(WavefrontProxyReporter, self).report_now(registry, timestamp)
 
