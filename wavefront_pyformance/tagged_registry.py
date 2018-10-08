@@ -4,7 +4,6 @@ Tagged Metrics Registry.
 @author: Hao Song (songhao@vmware.com)
 """
 import json
-from wavefront_pyformance import delta
 from pyformance import MetricsRegistry
 
 
@@ -57,4 +56,5 @@ class TaggedRegistry(MetricsRegistry):
 
     def delta_counter(self, key, tags=None):
         """Get a delta_counter based on a encoded key."""
-        return delta.delta_counter(self, self.encode_key(key, tags))
+        return wavefront_pyformance.delta.delta_counter(
+            self, self.encode_key(key, tags))
