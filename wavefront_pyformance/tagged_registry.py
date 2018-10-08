@@ -53,3 +53,8 @@ class TaggedRegistry(MetricsRegistry):
     def timer(self, key, tags=None):
         """Get a timer based on a encoded key."""
         return super(TaggedRegistry, self).timer(self.encode_key(key, tags))
+
+    def delta_counter(self, key, tags=None):
+        """Get a delta_counter based on a encoded key."""
+        return wavefront_pyformance.delta.delta_counter(
+            self, self.encode_key(key, tags))
