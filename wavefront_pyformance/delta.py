@@ -27,8 +27,9 @@ def delta_counter(registry, name, tags=None):
     try:
         ret_counter = DeltaCounter()
         if is_tagged_registry:
-            name = TaggedRegistry.encode_key(name, tags)
-        registry.add(name, ret_counter)
+            registry.add(TaggedRegistry.encode_key(name, tags), ret_counter)
+        else:
+            registry.add(name, ret_counter)
         return ret_counter
     except LookupError:
         if is_tagged_registry:
