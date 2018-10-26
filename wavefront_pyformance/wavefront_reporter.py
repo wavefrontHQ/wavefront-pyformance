@@ -41,8 +41,9 @@ class WavefrontReporter(reporter.Reporter):
         registry = registry or self.registry
         metrics = registry.dump_metrics()
         for key in metrics.keys():
-            is_delta = delta.is_delta_counter(key, registry)
             for value_key in metrics[key].keys():
+                is_delta = value_key is 'counter' and \
+                           delta.is_delta_counter(key, registry)
                 metric_name, metric_tags = self.decode_key(key)
                 tags = self.tags
                 if metric_tags:
