@@ -38,8 +38,17 @@ def delta_counter(registry, name, tags=None):
 
 
 def is_delta_counter(name, registry):
-    """Check if a DeltaCounter with the given name is in registry."""
-    counter = registry.counter(name)
+    """
+    Check if a DeltaCounter with the given name is in registry.
+
+    This method will generate a counter of {name} if not using TaggedRegistry.
+    """
+    counter = None
+    if isinstance(registry, TaggedRegistry):
+        if registry.has_counter(name):
+            counter = registry.counter(name)
+    else:
+        counter = registry.counter(name)
     return counter and isinstance(counter, DeltaCounter)
 
 
