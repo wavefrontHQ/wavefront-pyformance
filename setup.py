@@ -15,6 +15,7 @@ except ImportError:
     import sys
     sys.exit('Failed to import setuptools. Do pip install setuptools first.')
 
+REQUIRES = ["pyformance >= 0.4", "wavefront-sdk-python"]
 
 setuptools.setup(
     name='wavefront_pyformance',
