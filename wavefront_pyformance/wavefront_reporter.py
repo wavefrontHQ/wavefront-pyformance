@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 import json
 from pyformance.reporters import reporter
-from wavefront_python_sdk import WavefrontDirectClient, WavefrontProxyClient
+from wavefront_sdk import WavefrontDirectClient, WavefrontProxyClient
 from . import delta
 
 try:
