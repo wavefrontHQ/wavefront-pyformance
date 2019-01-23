@@ -53,3 +53,6 @@ class TaggedRegistry(MetricsRegistry):
     def timer(self, key, tags=None):
         """Get a timer based on a encoded key."""
         return super(TaggedRegistry, self).timer(self.encode_key(key, tags))
+
+    def has_counter(self, key, tags=None):
+        return self.encode_key(key, tags) in self._counters
