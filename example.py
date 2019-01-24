@@ -1,7 +1,7 @@
 from wavefront_pyformance.tagged_registry import TaggedRegistry
 from wavefront_pyformance.wavefront_reporter import \
     WavefrontProxyReporter, WavefrontDirectReporter
-from wavefront_pyformance import delta
+from wavefront_pyformance import delta, wavefront_histogram
 import time
 import sys
 
@@ -13,12 +13,12 @@ def report_metrics(host, server, token):
         host=host, port=2878, registry=reg,
         source="wavefront-pyformance-example",
         tags={"key1": "val1", "key2": "val2"},
-        prefix="python.proxy.")
+        prefix="python.proxy.").report_minute_distribution()
     wf_direct_reporter = WavefrontDirectReporter(
         server=server, token=token, registry=reg,
         source="wavefront-pyformance-exmaple",
         tags={"key1": "val1", "key2": "val2"},
-        prefix="python.direct.")
+        prefix="python.direct.").report_minute_distribution()
 
     # counter
     c1 = reg.counter("foo_count", tags={"counter_key": "counter_val"})
@@ -48,6 +48,11 @@ def report_metrics(host, server, token):
     h1 = reg.histogram("foo_histogram", tags={"hist_key": "hist_val"})
     h1.add(1.0)
     h1.add(1.5)
+
+    # Wavefront Histogram
+    h2 = wavefront_histogram.wavefront_histogram(reg, "wf_histogram")
+    h2.add(1.0)
+    h2.add(2.0)
 
     wf_direct_reporter.report_now()
     wf_direct_reporter.stop()

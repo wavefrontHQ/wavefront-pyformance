@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 import json
 from pyformance.reporters import reporter
 from wavefront_sdk import WavefrontDirectClient, WavefrontProxyClient
+from wavefront_sdk.entities.histogram import histogram_granularity
+from . import wavefront_histogram
 from . import delta
 
 try:
@@ -27,6 +29,7 @@ class WavefrontReporter(reporter.Reporter):
         self.source = source
         self.prefix = prefix
         self.tags = tags or {}
+        self.histogram_granularities = set()
 
     @staticmethod
     def decode_key(key):
@@ -41,13 +44,32 @@ class WavefrontReporter(reporter.Reporter):
         registry = registry or self.registry
         metrics = registry.dump_metrics()
         for key in metrics.keys():
+            metric_name, metric_tags = self.decode_key(key)
+            tags = self.tags
+            if metric_tags:
+                tags = self.tags.copy()
+                tags.update(metric_tags)
+
+            wf_hist = None
+            if key in registry._histograms:
+                wf_hist = registry._histograms[key]
+                if not isinstance(wf_hist,
+                                  wavefront_histogram.WavefrontHistogram):
+                    wf_hist = None
+            if wf_hist is not None:
+                distributions = wf_hist._delegate.flush_distributions()
+                for dist in distributions:
+                    self.wavefront_client.send_distribution(
+                        name='{}{}'.format(self.prefix, metric_name),
+                        centroids=dist.centroids,
+                        histogram_granularities=self.histogram_granularities,
+                        timestamp=dist.timestamp,
+                        source=self.source,
+                        tags=tags)
+                continue
+
             is_delta = delta.is_delta_counter(key, registry)
             for value_key in metrics[key].keys():
-                metric_name, metric_tags = self.decode_key(key)
-                tags = self.tags
-                if metric_tags:
-                    tags = self.tags.copy()
-                    tags.update(metric_tags)
                 if is_delta:
                     self.wavefront_client.send_delta_counter(
                         name=delta.get_delta_name(self.prefix, metric_name,
@@ -68,6 +90,18 @@ class WavefrontReporter(reporter.Reporter):
         """Stop pyformance and wavefront reporter."""
         super(WavefrontReporter, self).stop()
         self.wavefront_client.close()
+
+    def report_minute_distribution(self):
+        self.histogram_granularities.add(histogram_granularity.MINUTE)
+        return self
+
+    def report_hour_distribution(self):
+        self.histogram_granularities.add(histogram_granularity.HOUR)
+        return self
+
+    def report_day_distribution(self):
+        self.histogram_granularities.add(histogram_granularity.DAY)
+        return self
 
 
 class WavefrontProxyReporter(WavefrontReporter):
