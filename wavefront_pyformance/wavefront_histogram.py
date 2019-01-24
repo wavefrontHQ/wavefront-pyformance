@@ -36,8 +36,14 @@ def wavefront_histogram(registry, name, tags=None):
 
 
 class WavefrontHistogram(meters.Histogram):
-    def __init__(self):
-        self._delegate = histogram_impl.WavefrontHistogramImpl()
+    def __init__(self, clock_millis=None):
+        """
+        Construct a delegate Wavefront Histogram.
+
+        @param clock_millis: A function which returns timestamp.
+        @type clock_millis: function
+        """
+        self._delegate = histogram_impl.WavefrontHistogramImpl(clock_millis)
 
     def add(self, value):
         self._delegate.update(value)
