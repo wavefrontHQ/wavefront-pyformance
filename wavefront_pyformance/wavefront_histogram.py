@@ -35,6 +35,25 @@ def wavefront_histogram(registry, name, tags=None):
         return registry.histogram(name)
 
 
+def get_wavefront_histogram(name, registry):
+    """
+    Get Wavefront Histogram with the given name is in registry.
+
+    This method will return None if given name doesn't exist or is not the type
+    of WavefrontHistogram.
+    """
+    histogram = None
+    if isinstance(registry, TaggedRegistry):
+        if registry.has_histogram(name):
+            histogram = registry.histogram(name)
+    else:
+        histogram = registry.histogram(name)
+    if histogram and isinstance(histogram, WavefrontHistogram):
+        return histogram
+    else:
+        return None
+
+
 class WavefrontHistogram(meters.Histogram):
     def __init__(self, clock_millis=None):
         """
@@ -75,3 +94,6 @@ class WavefrontHistogram(meters.Histogram):
 
     def get_snapshot(self):
         return Snapshot([0])
+
+    def get_distribution(self):
+        return self._delegate.flush_distributions()

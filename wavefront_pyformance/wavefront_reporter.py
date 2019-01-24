@@ -50,14 +50,10 @@ class WavefrontReporter(reporter.Reporter):
                 tags = self.tags.copy()
                 tags.update(metric_tags)
 
-            wf_hist = None
-            if key in registry._histograms:
-                wf_hist = registry._histograms[key]
-                if not isinstance(wf_hist,
-                                  wavefront_histogram.WavefrontHistogram):
-                    wf_hist = None
+            wf_hist = wavefront_histogram.get_wavefront_histogram(key,
+                                                                  registry)
             if wf_hist is not None:
-                distributions = wf_hist._delegate.flush_distributions()
+                distributions = wf_hist.get_distribution()
                 for dist in distributions:
                     self.wavefront_client.send_distribution(
                         name='{}{}'.format(self.prefix, metric_name),
