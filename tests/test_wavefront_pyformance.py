@@ -1,7 +1,7 @@
 from unittest import TestCase
 import unittest
 from wavefront_pyformance.tagged_registry import TaggedRegistry
-from wavefront_pyformance import delta
+from wavefront_pyformance import delta, wavefront_histogram
 
 
 class TestDelta(TestCase):
@@ -26,6 +26,14 @@ class TestDelta(TestCase):
     def test_get_delta_name(self):
         d = delta.get_delta_name('delta.prefix', delta.DeltaCounter.DELTA_PREFIX + 'foo', 'count')
         assert(d.startswith(delta.DeltaCounter.DELTA_PREFIX))
+
+    def test_wavefront_histogram(self):
+        reg = TaggedRegistry()
+        pyformance_hist = reg.histogram("pyformance_hist").add(1.0)
+        wavefront_hist = wavefront_histogram.wavefront_histogram(
+            reg, "wavefront_hist").add(2.0)
+        assert(isinstance(wavefront_hist,
+                          wavefront_histogram.WavefrontHistogram))
 
 
 if __name__ == '__main__':

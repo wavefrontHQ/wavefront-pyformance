@@ -56,3 +56,6 @@ class TaggedRegistry(MetricsRegistry):
 
     def has_counter(self, key, tags=None):
         return self.encode_key(key, tags) in self._counters
+
+    def has_histogram(self, key, tags=None):
+        return self.encode_key(key, tags) in self._histograms
