@@ -35,7 +35,7 @@ def wavefront_histogram(registry, name, tags=None):
         return registry.histogram(name)
 
 
-def get_wavefront_histogram(name, registry):
+def get(name, registry):
     """
     Get Wavefront Histogram with the given name is in registry.
 
@@ -47,7 +47,8 @@ def get_wavefront_histogram(name, registry):
         if registry.has_histogram(name):
             histogram = registry.histogram(name)
     else:
-        histogram = registry.histogram(name)
+        if name in registry._histograms:
+            histogram = registry.histogram(name)
     if histogram and isinstance(histogram, WavefrontHistogram):
         return histogram
     else:

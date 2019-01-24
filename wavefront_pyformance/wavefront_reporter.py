@@ -50,8 +50,7 @@ class WavefrontReporter(reporter.Reporter):
                 tags = self.tags.copy()
                 tags.update(metric_tags)
 
-            wf_hist = wavefront_histogram.get_wavefront_histogram(key,
-                                                                  registry)
+            wf_hist = wavefront_histogram.get(key, registry)
             if wf_hist is not None:
                 distributions = wf_hist.get_distribution()
                 for dist in distributions:
