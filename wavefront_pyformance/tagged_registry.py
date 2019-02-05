@@ -59,3 +59,12 @@ class TaggedRegistry(MetricsRegistry):
 
     def has_histogram(self, key, tags=None):
         return self.encode_key(key, tags) in self._histograms
+
+    def has_gauge(self, key, tags=None):
+        return self.encode_key(key, tags) in self._gauges
+
+    def has_meter(self, key, tags=None):
+        return self.encode_key(key, tags) in self._meters
+
+    def has_timer(self, key, tags=None):
+        return self.encode_key(key, tags) in self._timers
