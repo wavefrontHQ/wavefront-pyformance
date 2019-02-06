@@ -20,7 +20,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
     LONG_DESCRIPTION = fd.read()
 
 setuptools.setup(
-    name='wavefront_pyformance',
+    name='wavefront-pyformance',
     version='0.9.3',
     author='Wavefront by VMware',
     author_email='chitimba@wavefront.com',

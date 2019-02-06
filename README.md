@@ -6,7 +6,7 @@ This is a plugin for [pyformance](https://github.com/omergertel/pyformance) whic
 Python 2.7+ and Python 3.x are supported.
 
 ```
-pip install wavefront_pyformance
+pip install wavefront-pyformance
 ```
 
 ## Usage
