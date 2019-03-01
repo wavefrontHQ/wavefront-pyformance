@@ -1,4 +1,10 @@
-# wavefront-pyformance [![travis build status](https://travis-ci.com/wavefrontHQ/wavefront-pyformance.svg?branch=master)](https://travis-ci.com/wavefrontHQ/wavefront-pyformance)
+# wavefront-pyformance
+
+[![image](https://img.shields.io/pypi/v/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
+[![image](https://img.shields.io/pypi/l/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
+[![image](https://img.shields.io/pypi/pyversions/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
+[![travis build status](https://travis-ci.com/wavefrontHQ/wavefront-pyformance.svg?branch=master)](https://travis-ci.com/wavefrontHQ/wavefront-pyformance)
+
 
 This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds Wavefront reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
 
