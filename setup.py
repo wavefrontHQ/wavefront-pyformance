@@ -28,6 +28,7 @@ setuptools.setup(
     license='Apache-2.0',
     description='Wavefront Pyformance Library',
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     keywords=[
         'PyFormance',
         'Wavefront',
