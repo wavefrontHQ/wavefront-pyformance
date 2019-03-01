@@ -43,7 +43,7 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(exclude=('tests',)),
     install_requires=(
-        'pyformance >= 0.4',
-        'wavefront-sdk-python >= 1.0'
+        'pyformance>=0.4',
+        'wavefront-sdk-python>=1.0'
         )
 )
