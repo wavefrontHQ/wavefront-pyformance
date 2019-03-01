@@ -15,7 +15,8 @@ pip install wavefront_pyformance
 
 The Wavefront Reporters support tagging at the host level. Tags passed to a reporter will be applied to every metric before being sent to Wavefront.
 
-You can create a `WavefrontProxyReporter` or `WavefrontDirectReporter`:
+#### Create Wavefront Reporter
+You can create a `WavefrontProxyReporter` or `WavefrontDirectReporter` as follows:
 
 ```Python
 from pyformance import MetricsRegistry
@@ -39,6 +40,13 @@ wf_direct_reporter = WavefrontDirectReporter(server=server, token=token, registr
                                              reporting_interval=10)
 wf_direct_reporter.start()
 ```
+#### Flush and stop Wavefront Reporter
+ After create Wavefront Reporter, `start()` will make the reporter automatically reporting every `reporting_interval` seconds.
+ Besides that, you can also call `report_now()` to perform reporting immediately. `report_now()` should also be called before you stop the reporter as follows:
+ ```Python
+wf_reporter.report_now()
+wf_reporter.stop()
+```
 
 ### Delta Counter
 
@@ -55,3 +63,16 @@ d1.inc(10)
 
 Note: Having the same metric name for any two types of metrics will result in only one time series at the server and thus cause collisions.
 In general, all metric names should be different. In case you have metrics that you want to track as both a Counter and Delta Counter, consider adding a relevant suffix to one of the metrics to differentiate one metric name from another.
+
+### Wavefront Histogram
+
+To create a [Wavefront Histogram](https://docs.wavefront.com/proxies_histograms.html):
+
+```Python
+from pyformance import MetricsRegistry
+from wavefront_pyformance import wavefront_histogram
+
+reg = MetricsRegistry()
+h1 = wavefront_histogram.wavefront_histogram(reg, "requests_duration")
+h1.add(10)
+```
