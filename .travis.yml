@@ -1,16 +1,29 @@
 dist: xenial
-
 language: python
-
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-
+- '2.7'
+- '3.5'
+- '3.6'
+- '3.7'
 install:
-  - pip install pyformance
-  - pip install wavefront-sdk-python
-
+- pip install pyformance
+- pip install wavefront-sdk-python
 script:
-  - python -m unittest discover
+- python -m unittest discover
+deploy:
+  # test.pypi.org/project/wavefront-pyformance
+- provider: pypi
+  user: wavefront-cs
+  server: https://test.pypi.org/legacy/
+  password:
+    secure: DTFqehB3SS1eV1gDlT6h4w3RB9hlSFzsAxyTUFX0iDu+IQ9HRDx7sm7zhmxXj4J9y9+5BEdHrseBZuE5cjjNgkMt2sQT/bhnN1xl4e1etddR0Ep/8qgVOob4KOtPtAP+8G8fyxwbyO29pGN7Liu0YtSBOOR45uJr3g6EjjC7GO8MvrFsFFcz1PbrhRUGL6Ozos38hEuIP9ZWnemwA2hX3sEkCTMkf1GmJ/S2NLLU9tBig5thHmPmLvtzOqjkxM0ugHWBia4CBpFDZhq8cGYKx32+AM+SWnLLJ7AsuOI334trgFbaYqSh2H/VbO/u/BXCu/tmEj/3dh7LAY63myZRNE6Ee+vJJVEt0XBDByyyb4lQklz+YN4QsDkP+lTIS4SUAuFp71fXsCrybrO+Tnt4CIkv2qPyCwf23ieSEofUZvAod1O09Cx/9uVXvjclbyMwZT5lq2ym5ROfoIDR8uqMcO9miiRKiFRNnqLImKDPQix5xdQuDQ2e11RxLGCws7cH+Ui81dMnTQb9Uf+JPLdWziGJ3EbCNXHYSV12virpn2sjl09TcWV8K+E+nIMfGdyvjYIIicXr3v1YE9HSkv1tQjhIzxZSBvuBOF+4C+Q5hpRnPsWa/NhGOkHPTE3Y3f/jEfioewMT0MqTY1hdPnrxJnX/lULyVH5kOSlHZJuOIYU=
+  on:
+    python: 3.7
+# pypi.org/project/wavefront-pyformance
+- provider: pypi
+  user: wavefront-cs
+  password:
+    secure: DTFqehB3SS1eV1gDlT6h4w3RB9hlSFzsAxyTUFX0iDu+IQ9HRDx7sm7zhmxXj4J9y9+5BEdHrseBZuE5cjjNgkMt2sQT/bhnN1xl4e1etddR0Ep/8qgVOob4KOtPtAP+8G8fyxwbyO29pGN7Liu0YtSBOOR45uJr3g6EjjC7GO8MvrFsFFcz1PbrhRUGL6Ozos38hEuIP9ZWnemwA2hX3sEkCTMkf1GmJ/S2NLLU9tBig5thHmPmLvtzOqjkxM0ugHWBia4CBpFDZhq8cGYKx32+AM+SWnLLJ7AsuOI334trgFbaYqSh2H/VbO/u/BXCu/tmEj/3dh7LAY63myZRNE6Ee+vJJVEt0XBDByyyb4lQklz+YN4QsDkP+lTIS4SUAuFp71fXsCrybrO+Tnt4CIkv2qPyCwf23ieSEofUZvAod1O09Cx/9uVXvjclbyMwZT5lq2ym5ROfoIDR8uqMcO9miiRKiFRNnqLImKDPQix5xdQuDQ2e11RxLGCws7cH+Ui81dMnTQb9Uf+JPLdWziGJ3EbCNXHYSV12virpn2sjl09TcWV8K+E+nIMfGdyvjYIIicXr3v1YE9HSkv1tQjhIzxZSBvuBOF+4C+Q5hpRnPsWa/NhGOkHPTE3Y3f/jEfioewMT0MqTY1hdPnrxJnX/lULyVH5kOSlHZJuOIYU=
+  on:
+    python: 3.7
+    tags: true
