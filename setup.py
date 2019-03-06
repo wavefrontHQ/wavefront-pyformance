@@ -21,7 +21,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='0.9.4-SNAPSHOT',
+    version='0.9.4.dev1',
     author='Wavefront by VMware',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
