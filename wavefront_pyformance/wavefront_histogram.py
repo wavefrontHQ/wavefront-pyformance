@@ -31,7 +31,7 @@ def wavefront_histogram(registry, name, tags=None):
         return wf_histogram
     except LookupError:
         if is_tagged_registry:
-            return registry.histogram(name, tags)
+            return get(name, registry)
         return registry.histogram(name)
 
 
