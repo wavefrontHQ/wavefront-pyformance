@@ -1,37 +1,50 @@
-from unittest import TestCase
+"""Delta Metrics Test Module."""
+
 import unittest
-from wavefront_pyformance.tagged_registry import TaggedRegistry
-from wavefront_pyformance import delta, wavefront_histogram
+
+from wavefront_pyformance import delta
+from wavefront_pyformance import tagged_registry
+from wavefront_pyformance import wavefront_histogram
 
 
-class TestDelta(TestCase):
+class TestDelta(unittest.TestCase):
+    """Delta Metrics Test Case."""
+
     def test_delta_counter(self):
-        reg = TaggedRegistry()
-        counter = delta.delta_counter(reg, "foo")
+        """Test Delta Counter."""
+        reg = tagged_registry.TaggedRegistry()
+        counter = delta.delta_counter(reg, 'foo')
         assert(isinstance(counter, delta.DeltaCounter))
 
         # test duplicate (should return previously registered counter)
-        duplicate_counter = delta.delta_counter(reg, "foo")
+        duplicate_counter = delta.delta_counter(reg, 'foo')
         assert(counter == duplicate_counter)
-        assert(delta.is_delta_counter(delta.DeltaCounter.DELTA_PREFIX + "foo", reg))
-
-        different_counter = delta.delta_counter(reg, "foobar")
+        assert(delta.is_delta_counter(delta.DeltaCounter.DELTA_PREFIX + 'foo',
+                                      reg))
+        different_counter = delta.delta_counter(reg, 'foobar')
         assert(counter != different_counter)
 
     def test_has_delta_prefix(self):
-        assert(delta._has_delta_prefix(delta.DeltaCounter.DELTA_PREFIX + "foo")) # valid prefix
-        assert(delta._has_delta_prefix(delta.DeltaCounter.ALT_DELTA_PREFIX + "foo")) # valid prefix
-        assert(delta._has_delta_prefix("foo") is False) # invalid prefix
+        """Test Delta Prefix Existence."""
+        assert(delta._has_delta_prefix(
+            delta.DeltaCounter.DELTA_PREFIX + 'foo'))  # valid prefix
+        assert(delta._has_delta_prefix(
+            delta.DeltaCounter.ALT_DELTA_PREFIX + 'foo'))  # valid prefix
+        assert(delta._has_delta_prefix('foo') is False)  # invalid prefix
 
     def test_get_delta_name(self):
-        d = delta.get_delta_name('delta.prefix', delta.DeltaCounter.DELTA_PREFIX + 'foo', 'count')
+        """Test Getting Delta Name."""
+        d = delta.get_delta_name('delta.prefix',
+                                 delta.DeltaCounter.DELTA_PREFIX + 'foo',
+                                 'count')
         assert(d.startswith(delta.DeltaCounter.DELTA_PREFIX))
 
     def test_wavefront_histogram(self):
-        reg = TaggedRegistry()
-        pyformance_hist = reg.histogram("pyformance_hist").add(1.0)
+        """Test Wavefront Histogram."""
+        reg = tagged_registry.TaggedRegistry()
+        _ = reg.histogram('pyformance_hist').add(1.0)
         wavefront_hist = wavefront_histogram.wavefront_histogram(
-            reg, "wavefront_hist").add(2.0)
+            reg, 'wavefront_hist').add(2.0)
         assert(isinstance(wavefront_hist,
                           wavefront_histogram.WavefrontHistogram))
 

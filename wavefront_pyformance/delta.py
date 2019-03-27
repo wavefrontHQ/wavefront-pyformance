@@ -2,15 +2,17 @@
 """Delta Counter implementation and helper functions."""
 
 from __future__ import unicode_literals
-from pyformance import meters
-from wavefront_pyformance.tagged_registry import TaggedRegistry
+
+import pyformance
+
+from . import tagged_registry
 
 
 def delta_counter(registry, name, tags=None):
-    """
-    Register a DeltaCounter with the given registry and returns the instance.
+    """Register a DeltaCounter with the given registry.
 
-    The given name is prefixed with DeltaCounter.DELTA_PREFIX for registering.
+    The given name is prefixed with
+    DeltaCounter.DELTA_PREFIX for registering.
 
     :param registry: the metrics registry to register with
     :param name: the delta counter name
@@ -22,12 +24,13 @@ def delta_counter(registry, name, tags=None):
     name = (name if _has_delta_prefix(name)
             else DeltaCounter.DELTA_PREFIX + name)
 
-    is_tagged_registry = isinstance(registry, TaggedRegistry)
+    is_tagged_registry = isinstance(registry, tagged_registry.TaggedRegistry)
 
     try:
         ret_counter = DeltaCounter()
         if is_tagged_registry:
-            registry.add(TaggedRegistry.encode_key(name, tags), ret_counter)
+            registry.add(tagged_registry.TaggedRegistry.encode_key(name, tags),
+                         ret_counter)
         else:
             registry.add(name, ret_counter)
         return ret_counter
@@ -40,12 +43,11 @@ def delta_counter(registry, name, tags=None):
 def is_delta_counter(name, registry):
     """Check if a DeltaCounter with the given name is in registry."""
     counter = None
-    if isinstance(registry, TaggedRegistry):
+    if isinstance(registry, tagged_registry.TaggedRegistry):
         if registry.has_counter(name):
             counter = registry.counter(name)
-    else:
-        if name in registry._counters:
-            counter = registry.counter(name)
+    elif name in registry._counters:  # pylint: disable=protected-access
+        counter = registry.counter(name)
     return counter and isinstance(counter, DeltaCounter)
 
 
@@ -67,13 +69,12 @@ def _has_delta_prefix(name):
                      or name.startswith(DeltaCounter.ALT_DELTA_PREFIX))
 
 
-class DeltaCounter(meters.Counter):
-    """
-    A counter for Wavefront delta metrics.
+class DeltaCounter(pyformance.meters.Counter):
+    """A counter for Wavefront delta metrics.
 
     Differs from a counter in that it is reset in the WavefrontReporter
     every time the value is reported.
     """
 
-    DELTA_PREFIX = u"\u2206"  # '∆'
-    ALT_DELTA_PREFIX = u"\u0394"  # 'Δ'
+    DELTA_PREFIX = u'\u2206'  # '∆'
+    ALT_DELTA_PREFIX = u'\u0394'  # 'Δ'
