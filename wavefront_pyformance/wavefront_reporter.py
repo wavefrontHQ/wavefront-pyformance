@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """WavefrontDirectReporter and WavefrontProxyReporter implementations."""
-
 from __future__ import unicode_literals
+
 import json
-from pyformance.reporters import reporter
-from wavefront_sdk import WavefrontDirectClient, WavefrontProxyClient
+
+import pyformance.reporters.reporter
+
+import wavefront_sdk
 from wavefront_sdk.entities.histogram import histogram_granularity
-from . import wavefront_histogram
+
 from . import delta
+from . import wavefront_histogram
 
 try:
     from urllib.parse import urlparse
@@ -15,7 +18,7 @@ except ImportError:
     from urlparse import urlparse
 
 
-class WavefrontReporter(reporter.Reporter):
+class WavefrontReporter(pyformance.reporters.reporter.Reporter):
     """Base reporter for reporting data in Wavefront format."""
 
     # pylint: disable=too-many-arguments
@@ -87,14 +90,17 @@ class WavefrontReporter(reporter.Reporter):
         self.wavefront_client.close()
 
     def report_minute_distribution(self):
+        """Report distribution using minute granularity."""
         self.histogram_granularities.add(histogram_granularity.MINUTE)
         return self
 
     def report_hour_distribution(self):
+        """Report distribution using hour granularity."""
         self.histogram_granularities.add(histogram_granularity.HOUR)
         return self
 
     def report_day_distribution(self):
+        """Report distribution with day granularity."""
         self.histogram_granularities.add(histogram_granularity.DAY)
         return self
 
@@ -112,7 +118,7 @@ class WavefrontProxyReporter(WavefrontReporter):
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags)
-        self.wavefront_client = WavefrontProxyClient(
+        self.wavefront_client = wavefront_sdk.WavefrontProxyClient(
             host=host, metrics_port=port, distribution_port=distribution_port,
             tracing_port=None)
 
@@ -141,7 +147,7 @@ class WavefrontDirectReporter(WavefrontReporter):
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000
-        self.wavefront_client = WavefrontDirectClient(
+        self.wavefront_client = wavefront_sdk.WavefrontDirectClient(
             self.server, token, batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
 
