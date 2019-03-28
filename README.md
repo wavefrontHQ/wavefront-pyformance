@@ -25,25 +25,27 @@ The Wavefront Reporters support tagging at the host level. Tags passed to a repo
 You can create a `WavefrontProxyReporter` or `WavefrontDirectReporter` as follows:
 
 ```Python
-from pyformance import MetricsRegistry
-from wavefront_pyformance.wavefront_reporter import WavefrontProxyReporter, WavefrontDirectReporter
+import pyformance
+from wavefront_pyformance import wavefront_reporter
 
-reg = MetricsRegistry()
+reg = pyformance.MetricsRegistry()
 
 # report metrics to a Wavefront proxy every 10s
-wf_proxy_reporter = WavefrontProxyReporter(host=host, port=2878, registry=reg,
-                                           source="wavefront-pyformance-example",
-                                           tags={"key1":"val1", "key2":"val2"},
-                                           prefix="python.proxy.",
-                                           reporting_interval=10)
+wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
+    host=host, port=2878, registry=reg,
+    source='wavefront-pyformance-example',
+    tags={'key1': 'val1', 'key2': 'val2'},
+    prefix='python.proxy.',
+    reporting_interval=10)
 wf_proxy_reporter.start()
 
 # report metrics directly to a Wavefront server every 10s
-wf_direct_reporter = WavefrontDirectReporter(server=server, token=token, registry=reg,
-                                             source="wavefront-pyformance-exmaple",
-                                             tags={"key1":"val1", "key2": "val2"},
-                                             prefix="python.direct.",
-                                             reporting_interval=10)
+wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
+    server=server, token=token, registry=reg,
+    source='wavefront-pyformance-exmaple',
+    tags={'key1': 'val1', 'key2': 'val2'},
+    prefix='python.direct.',
+    reporting_interval=10)
 wf_direct_reporter.start()
 ```
 #### Flush and stop Wavefront Reporter
@@ -59,12 +61,12 @@ wf_reporter.stop()
 To create a Wavefront delta counter:
 
 ```Python
-from pyformance import MetricsRegistry
+import pyformance
 from wavefront_pyformance import delta
 
-reg = MetricsRegistry()
-d1 = delta.delta_counter(reg, "requests_delta")
-d1.inc(10)
+reg = pyformance.MetricsRegistry()
+d_0 = delta.delta_counter(reg, 'requests_delta')
+d_0.inc(10)
 ```
 
 Note: Having the same metric name for any two types of metrics will result in only one time series at the server and thus cause collisions.
@@ -75,10 +77,10 @@ In general, all metric names should be different. In case you have metrics that 
 To create a [Wavefront Histogram](https://docs.wavefront.com/proxies_histograms.html):
 
 ```Python
-from pyformance import MetricsRegistry
+import pyformance
 from wavefront_pyformance import wavefront_histogram
 
-reg = MetricsRegistry()
-h1 = wavefront_histogram.wavefront_histogram(reg, "requests_duration")
-h1.add(10)
+reg = pyformance.MetricsRegistry()
+h_0 = wavefront_histogram.wavefront_histogram(reg, 'requests_duration')
+h_0.add(10)
 ```
