@@ -10,8 +10,8 @@ import wavefront_sdk
 from wavefront_sdk.entities.histogram import histogram_granularity
 
 from . import delta
-from . import wavefront_histogram
 from . import runtime_metrics
+from . import wavefront_histogram
 
 try:
     from urllib.parse import urlparse
@@ -24,7 +24,8 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
 
     # pylint: disable=too-many-arguments
     def __init__(self, source='wavefront-pyformance', registry=None,
-                 reporting_interval=10, clock=None, prefix='', tags=None, runtime_metric=False):
+                 reporting_interval=10, clock=None, prefix='', tags=None,
+                 runtime_metric=False):
         """Construct Wavefront Reporter."""
         super(WavefrontReporter, self).__init__(
             registry=registry, reporting_interval=reporting_interval,
@@ -47,7 +48,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
         registry = registry or self.registry
-        if self.runtime_metric == True:
+        if self.runtime_metric:
             col = runtime_metrics.Collector(registry)
             col.collect()
         metrics = registry.dump_metrics()
