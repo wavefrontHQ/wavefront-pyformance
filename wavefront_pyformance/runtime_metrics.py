@@ -24,14 +24,12 @@ class Collector(object):
         metric1.set_value(system_cpu)
 
     def collect_cpupercent(self):
-        #for x in range(2):
         cpupercent = self.process.cpu_percent(interval = 1)
 
         metric1 = self.registry.gauge("cpu.percent", tags = self.custom_tags)
         metric1.set_value(cpupercent)
 
     def collect_io(self):
-        #process = psutil.Process(os.getpid())
         io_counters = self.process.io_counters()
         read_count = io_counters[0]
         write_count = io_counters[1]
@@ -57,7 +55,6 @@ class Collector(object):
         metric1.set_value(usage)
 
     def collect_memorypercent(self):
-        #process = psutil.Process(os.getpid())
         memorypercent = self.process.memory_percent(memtype="rss")
 
         metric1 = self.registry.gauge("memory.rss.percent", tags = self.custom_tags)
@@ -83,7 +80,6 @@ class Collector(object):
 
     def collect_garbage(self):
         (count0, count1, count2) = gc.get_count()
-        #(threshold0, threshold1, threshold2) = gc.get_threshold()
         object_count = len(gc.get_objects())
         referrers_count = len(gc.get_referrers())
         referents_count = len(gc.get_referents())
