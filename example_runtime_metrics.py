@@ -1,16 +1,13 @@
 """Python Runtime Metric Collection Example."""
 
 
-from wavefront_pyformance import tagged_registry
-from wavefront_pyformance import wavefront_reporter
-
-
 import argparse
 import sys
 import time
 
 
-sys.path.insert(1, '../')
+from wavefront_pyformance import tagged_registry
+from wavefront_pyformance import wavefront_reporter
 
 
 def report_metrics(host, server='', token=''):

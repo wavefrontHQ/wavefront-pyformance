@@ -8,9 +8,9 @@ import threading
 
 import psutil
 
+
 class Collector(object):
     """Python Runtime Metrics Collection Class."""
-
 
     def __init__(self, registry=None):
         """Construct Runtime Metrics Collector."""
@@ -120,7 +120,6 @@ class Collector(object):
         metric6 = self.registry.gauge("gc.referents.count",
                                       tags=self.custom_tags)
         metric6.set_value(referents_count)
-
 
     def collect_processes(self):
         """Collect Processes Details."""
