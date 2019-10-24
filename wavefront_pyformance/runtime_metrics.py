@@ -1,4 +1,5 @@
 """Python Runtime Metrics Collection Class."""
+# pylint: disable=E0012,R0205
 
 import gc
 import multiprocessing
@@ -60,10 +61,7 @@ class RuntimeCollector(object):
 
     def collect_memoryusage(self):
         """Collect Memory Usage."""
-        if resource:
-            usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        else:
-            usage = self.process.memory_info()[0] / float(2 ** 20)
+        usage = self.process.memory_info()[0] / float(2 ** 20)
         metric1 = self.registry.gauge("memory.rss.usage",
                                       tags=self.custom_tags)
         metric1.set_value(usage)
