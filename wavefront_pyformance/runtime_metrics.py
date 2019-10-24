@@ -9,7 +9,7 @@ import threading
 import psutil
 
 
-class Collector(object):
+class RuntimeCollector(object):
     """Python Runtime Metrics Collection Class."""
 
     def __init__(self, registry=None):

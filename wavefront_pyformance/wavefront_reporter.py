@@ -49,7 +49,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
         """Collect metrics from registry and report them to Wavefront."""
         registry = registry or self.registry
         if self.runtime_metric:
-            col = runtime_metrics.Collector(registry)
+            col = runtime_metrics.RuntimeCollector(registry)
             col.collect()
         metrics = registry.dump_metrics()
         for key in metrics.keys():
