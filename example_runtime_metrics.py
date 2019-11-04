@@ -13,7 +13,7 @@ from wavefront_pyformance import wavefront_reporter
 def report_metrics(host, server='', token=''):
     """Runtime Metric Reporting Function Example."""
     reg = tagged_registry.TaggedRegistry()
-    
+
     wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
         host=host, port=2878, registry=reg,
         source='runtime-metric-test',

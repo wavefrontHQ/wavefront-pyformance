@@ -11,6 +11,7 @@ import psutil
 
 class RuntimeCollector(object):
     """Python Runtime Metrics Collection Class."""
+
     # pylint: disable=E0012,R0205
 
     def __init__(self, registry=None):
