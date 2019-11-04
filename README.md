@@ -87,7 +87,7 @@ h_0.add(10)
 
 ### Python Runtime Metrics
 
-To enable Python runtime metrics reporting, set the `runtime_metric` flag to True:
+To enable Python runtime metrics reporting, set the `enable_runtime_metrics` flag to True:
 
 ```
     wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
@@ -95,5 +95,5 @@ To enable Python runtime metrics reporting, set the `runtime_metric` flag to Tru
         source='runtime-metric-test',
         tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
         prefix='python.proxy.',
-        runtime_metric=True).report_minute_distribution()
+        enable_runtime_metrics=True).report_minute_distribution()
 ```

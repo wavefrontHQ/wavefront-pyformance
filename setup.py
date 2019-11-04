@@ -45,6 +45,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=('tests',)),
     install_requires=(
         'pyformance>=0.4',
-        'wavefront-sdk-python>=1.1'
+        'wavefront-sdk-python>=1.1',
+        'psutil>=5.6.3'
         )
 )
