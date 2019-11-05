@@ -41,6 +41,5 @@ if __name__ == '__main__':
     arg.add_argument('token', help='Wavefront API token.')
     ARGS = arg.parse_args()
     while True:
-        # report_metrics(ARGS.host)
         report_metrics(ARGS.host, ARGS.server, ARGS.token)
         time.sleep(5)
