@@ -40,26 +40,6 @@ class RuntimeCollector(object):
                                       tags=self.custom_tags)
         metric1.set_value(cpupercent)
 
-    def collect_io(self):
-        """Collect IO Counters."""
-        io_counters = self.process.io_counters()
-        read_count = io_counters[0]
-        write_count = io_counters[1]
-        read_bytes = io_counters[2]
-        write_bytes = io_counters[3]
-        metric1 = self.registry.gauge("io.read_count",
-                                      tags=self.custom_tags)
-        metric1.set_value(read_count)
-        metric2 = self.registry.gauge("io.write_count",
-                                      tags=self.custom_tags)
-        metric2.set_value(write_count)
-        metric3 = self.registry.gauge("io.read_bytes",
-                                      tags=self.custom_tags)
-        metric3.set_value(read_bytes)
-        metric4 = self.registry.gauge("io.write_bytes",
-                                      tags=self.custom_tags)
-        metric4.set_value(write_bytes)
-
     def collect_memoryusage(self):
         """Collect Memory Usage."""
         usage = self.process.memory_info()[0] / float(2 ** 20)
@@ -178,7 +158,6 @@ class RuntimeCollector(object):
         """All Collection Wrapper Function."""
         self.collect_cputimes()
         self.collect_cpupercent()
-        self.collect_io()
         self.collect_memoryusage()
         self.collect_memorypercent()
         self.collect_garbage()

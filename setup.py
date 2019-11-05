@@ -21,7 +21,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='1.0.2',
+    version='1.0.3',
     author='Wavefront by VMware',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
@@ -39,7 +39,8 @@ setuptools.setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8'
         ],
     include_package_data=True,
     packages=setuptools.find_packages(exclude=('tests',)),
