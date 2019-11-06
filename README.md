@@ -89,11 +89,18 @@ h_0.add(10)
 
 To enable Python runtime metrics reporting, set the `enable_runtime_metrics` flag to True:
 
-```
+```Python
     wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
         host=host, port=2878, registry=reg,
         source='runtime-metric-test',
         tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
         prefix='python.proxy.',
+        enable_runtime_metrics=True).report_minute_distribution()
+
+    wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
+        server=server, token=token, registry=reg,
+        source='runtime-metric-test',
+        tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
+        prefix='python.direct.',
         enable_runtime_metrics=True).report_minute_distribution()
 ```

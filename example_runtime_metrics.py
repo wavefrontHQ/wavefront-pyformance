@@ -25,7 +25,7 @@ def report_metrics(host, server='', token=''):
         source='runtime-metric-test',
         tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
         prefix='python.direct.',
-        enable_runtime_metrics=False).report_minute_distribution()
+        enable_runtime_metrics=True).report_minute_distribution()
 
     wf_proxy_reporter.report_now()
     wf_proxy_reporter.stop()
