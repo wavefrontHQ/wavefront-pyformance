@@ -29,26 +29,26 @@ class RuntimeCollector(object):
         """Collect CPU Times."""
         cputimes = self.process.cpu_times()
         system_cpu = cputimes[1]  # system cpu
-        metric1 = self.registry.gauge("cpu.times",
-            tags=self.custom_tags).set_value(system_cpu)
+        self.registry.gauge("cpu.times",
+                            tags=self.custom_tags).set_value(system_cpu)
 
     def collect_cpupercent(self):
         """Collect CPU in Percentage."""
         cpupercent = self.process.cpu_percent(interval=1)
-        metric1 = self.registry.gauge("cpu.percent",
-            tags=self.custom_tags).set_value(cpupercent)
+        self.registry.gauge("cpu.percent",
+                            tags=self.custom_tags).set_value(cpupercent)
 
     def collect_memoryusage(self):
         """Collect Memory Usage."""
         usage = self.process.memory_info()[0] / float(2 ** 20)
-        metric1 = self.registry.gauge("memory.rss.usage",
-            tags=self.custom_tags).set_value(usage)
+        self.registry.gauge("memory.rss.usage",
+                            tags=self.custom_tags).set_value(usage)
 
     def collect_memorypercent(self):
         """Collect Memory in Percentage."""
         memorypercent = self.process.memory_percent(memtype="rss")
-        metric1 = self.registry.gauge("memory.rss.percent",
-            tags=self.custom_tags).set_value(memorypercent)
+        self.registry.gauge("memory.rss.percent",
+                            tags=self.custom_tags).set_value(memorypercent)
 
     def collect_threads(self):
         """Collect Threading Metrics."""
@@ -59,12 +59,12 @@ class RuntimeCollector(object):
                 daemon += 1
             if thread.isAlive():
                 alive += 1
-        metric1 = self.registry.gauge("thread.count",
-            tags=self.custom_tags).set_value(counter)
-        metric2 = self.registry.gauge("thread.daemon",
-            tags=self.custom_tags).set_value(daemon)
-        metric3 = self.registry.gauge("thread.alive",
-            tags=self.custom_tags).set_value(alive)
+        self.registry.gauge("thread.count",
+                            tags=self.custom_tags).set_value(counter)
+        self.registry.gauge("thread.daemon",
+                            tags=self.custom_tags).set_value(daemon)
+        self.registry.gauge("thread.alive",
+                            tags=self.custom_tags).set_value(alive)
 
     def collect_garbage(self):
         """Collect Garbage Collection Metrics."""
@@ -72,18 +72,18 @@ class RuntimeCollector(object):
         object_count = len(gc.get_objects())
         referrers_count = len(gc.get_referrers())
         referents_count = len(gc.get_referents())
-        metric1 = self.registry.gauge("gc.collection.count0",
-            tags=self.custom_tags).set_value(count0)
-        metric2 = self.registry.gauge("gc.collection.count1",
-            tags=self.custom_tags).set_value(count1)
-        metric3 = self.registry.gauge("gc.collection.count2",
-            tags=self.custom_tags).set_value(count2)
-        metric4 = self.registry.gauge("gc.objects.count",
-            tags=self.custom_tags).set_value(object_count)
-        metric5 = self.registry.gauge("gc.referrers.count",
-            tags=self.custom_tags).set_value(referrers_count)
-        metric6 = self.registry.gauge("gc.referents.count",
-            tags=self.custom_tags).set_value(referents_count)
+        self.registry.gauge("gc.collection.count0",
+                            tags=self.custom_tags).set_value(count0)
+        self.registry.gauge("gc.collection.count1",
+                            tags=self.custom_tags).set_value(count1)
+        self.registry.gauge("gc.collection.count2",
+                            tags=self.custom_tags).set_value(count2)
+        self.registry.gauge("gc.objects.count",
+                            tags=self.custom_tags).set_value(object_count)
+        self.registry.gauge("gc.referrers.count",
+                            tags=self.custom_tags).set_value(referrers_count)
+        self.registry.gauge("gc.referents.count",
+                            tags=self.custom_tags).set_value(referents_count)
 
     def collect_processes(self):
         """Collect Processes Details."""
@@ -94,39 +94,39 @@ class RuntimeCollector(object):
                 alive += 1
             if proc.daemon:
                 daemon += 1
-        metric1 = self.registry.gauge("processes.count",
-            tags=self.custom_tags).set_value(counter)
-        metric2 = self.registry.gauge("processes.alive",
-            tags=self.custom_tags).set_value(alive)
-        metric2 = self.registry.gauge("processes.daemon",
-            tags=self.custom_tags).set_value(daemon)
+        self.registry.gauge("processes.count",
+                            tags=self.custom_tags).set_value(counter)
+        self.registry.gauge("processes.alive",
+                            tags=self.custom_tags).set_value(alive)
+        self.registry.gauge("processes.daemon",
+                            tags=self.custom_tags).set_value(daemon)
 
     def collect_pgfault(self):
         """Collect Page Faults."""
         major_pgfault = resource.getrusage(resource.RUSAGE_SELF).ru_majflt
         minor_pgfault = resource.getrusage(resource.RUSAGE_SELF).ru_minflt
-        metric1 = self.registry.gauge("pgfault.major",
-            tags=self.custom_tags).set_value(major_pgfault)
-        metric2 = self.registry.gauge("pgfault.minor",
-            tags=self.custom_tags).set_value(minor_pgfault)
+        self.registry.gauge("pgfault.major",
+                            tags=self.custom_tags).set_value(major_pgfault)
+        self.registry.gauge("pgfault.minor",
+                            tags=self.custom_tags).set_value(minor_pgfault)
 
     def collect_exectime(self):
         """Collect Process Execution Time."""
         utime = resource.getrusage(resource.RUSAGE_SELF).ru_utime
         stime = resource.getrusage(resource.RUSAGE_SELF).ru_stime
-        metric1 = self.registry.gauge("exectime.user",
-            tags=self.custom_tags).set_value(utime)
-        metric2 = self.registry.gauge("exectime.kernel",
-            tags=self.custom_tags).set_value(stime)
+        self.registry.gauge("exectime.user",
+                            tags=self.custom_tags).set_value(utime)
+        self.registry.gauge("exectime.kernel",
+                            tags=self.custom_tags).set_value(stime)
 
     def collect_contextswitches(self):
         """Collect Context Switches."""
         vconsw = resource.getrusage(resource.RUSAGE_SELF).ru_nvcsw
         iconsw = resource.getrusage(resource.RUSAGE_SELF).ru_nivcsw
-        metric1 = self.registry.gauge("conswitch.voluntary",
-            tags=self.custom_tags).set_value(vconsw)
-        metric2 = self.registry.gauge("conswitch.involuntary",
-            tags=self.custom_tags).set_value(iconsw)
+        self.registry.gauge("conswitch.voluntary",
+                            tags=self.custom_tags).set_value(vconsw)
+        self.registry.gauge("conswitch.involuntary",
+                            tags=self.custom_tags).set_value(iconsw)
 
     def collect(self):
         """All Collection Wrapper Function."""
