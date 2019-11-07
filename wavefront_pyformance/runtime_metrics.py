@@ -3,7 +3,6 @@
 import gc
 import multiprocessing
 import os
-import resource
 import threading
 
 import psutil
@@ -101,32 +100,15 @@ class RuntimeCollector(object):
         self.registry.gauge("processes.daemon",
                             tags=self.custom_tags).set_value(daemon)
 
-    def collect_pgfault(self):
-        """Collect Page Faults."""
-        major_pgfault = resource.getrusage(resource.RUSAGE_SELF).ru_majflt
-        minor_pgfault = resource.getrusage(resource.RUSAGE_SELF).ru_minflt
-        self.registry.gauge("pgfault.major",
-                            tags=self.custom_tags).set_value(major_pgfault)
-        self.registry.gauge("pgfault.minor",
-                            tags=self.custom_tags).set_value(minor_pgfault)
-
-    def collect_exectime(self):
-        """Collect Process Execution Time."""
-        utime = resource.getrusage(resource.RUSAGE_SELF).ru_utime
-        stime = resource.getrusage(resource.RUSAGE_SELF).ru_stime
-        self.registry.gauge("exectime.user",
-                            tags=self.custom_tags).set_value(utime)
-        self.registry.gauge("exectime.kernel",
-                            tags=self.custom_tags).set_value(stime)
-
     def collect_contextswitches(self):
         """Collect Context Switches."""
-        vconsw = resource.getrusage(resource.RUSAGE_SELF).ru_nvcsw
-        iconsw = resource.getrusage(resource.RUSAGE_SELF).ru_nivcsw
-        self.registry.gauge("conswitch.voluntary",
-                            tags=self.custom_tags).set_value(vconsw)
-        self.registry.gauge("conswitch.involuntary",
-                            tags=self.custom_tags).set_value(iconsw)
+        ctx_switches = self.process.num_ctx_switches()
+        voluntary = ctx_switches[0]
+        involuntary = ctx_switches[1]
+        self.registry.gauge("ctxswitch.voluntary",
+                            tags=self.custom_tags).set_value(voluntary)
+        self.registry.gauge("ctxswitch.involuntary",
+                            tags=self.custom_tags).set_value(involuntary)
 
     def collect(self):
         """All Collection Wrapper Function."""
@@ -137,6 +119,4 @@ class RuntimeCollector(object):
         self.collect_garbage()
         self.collect_threads()
         self.collect_processes()
-        self.collect_pgfault()
-        self.collect_exectime()
         self.collect_contextswitches()
