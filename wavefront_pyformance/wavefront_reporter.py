@@ -45,7 +45,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
             return key_name, json.loads(tags_json)
         return key, None
 
-    def report_now(self, registry=None, timestamp=None):
+    def report_now(self, registry=None, timestamp=None, on_close=False):
         """Collect metrics from registry and report them to Wavefront."""
         registry = registry or self.registry
         if self.enable_runtime_metrics:
@@ -62,6 +62,9 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
             wf_hist = wavefront_histogram.get(key, registry)
             if wf_hist is not None:
                 distributions = wf_hist.get_distribution()
+                if on_close:
+                    distributions.extend(
+                        wf_hist.get_current_minute_distribution())
                 for dist in distributions:
                     self.wavefront_client.send_distribution(
                         name='{}{}'.format(self.prefix, metric_name),
@@ -92,7 +95,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
 
     def stop(self):
         """Stop pyformance and wavefront reporter."""
-        self.report_now()
+        self.report_now(registry=self.registry, on_close=True)
         super(WavefrontReporter, self).stop()
         self.wavefront_client.close()
 
@@ -129,10 +132,11 @@ class WavefrontProxyReporter(WavefrontReporter):
             host=host, metrics_port=port, distribution_port=distribution_port,
             tracing_port=None)
 
-    def report_now(self, registry=None, timestamp=None):
+    def report_now(self, registry=None, timestamp=None, on_close=False):
         """Collect metrics from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
-        super(WavefrontProxyReporter, self).report_now(registry, timestamp)
+        super(WavefrontProxyReporter, self).report_now(registry, timestamp,
+                                                       on_close)
 
 
 class WavefrontDirectReporter(WavefrontReporter):
@@ -166,7 +170,8 @@ class WavefrontDirectReporter(WavefrontReporter):
             raise ValueError('invalid server url')
         return server
 
-    def report_now(self, registry=None, timestamp=None):
+    def report_now(self, registry=None, timestamp=None, on_close=False):
         """Collect metrics from registry and report them to Wavefront."""
-        super(WavefrontDirectReporter, self).report_now(registry, timestamp)
+        super(WavefrontDirectReporter, self).report_now(registry, timestamp,
+                                                        on_close)
         self.wavefront_client.flush_now()
