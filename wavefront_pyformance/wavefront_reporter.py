@@ -24,7 +24,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
 
     # pylint: disable=too-many-arguments
     def __init__(self, source='wavefront-pyformance', registry=None,
-                 reporting_interval=10, clock=None, prefix='', tags=None,
+                 reporting_interval=60, clock=None, prefix='', tags=None,
                  enable_runtime_metrics=False):
         """Construct Wavefront Reporter."""
         super(WavefrontReporter, self).__init__(
@@ -117,7 +117,7 @@ class WavefrontProxyReporter(WavefrontReporter):
     # pylint: disable=too-many-arguments
     def __init__(self, host, port=2878, distribution_port=None,
                  source='wavefront-pyformance', registry=None,
-                 reporting_interval=10, clock=None, prefix='proxy.',
+                 reporting_interval=60, clock=None, prefix='proxy.',
                  tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do proxy reporter specific setup."""
         super(WavefrontProxyReporter, self).__init__(
@@ -143,7 +143,7 @@ class WavefrontDirectReporter(WavefrontReporter):
 
     # pylint: disable=too-many-arguments
     def __init__(self, server, token, source='wavefront-pyformance',
-                 registry=None, reporting_interval=10, clock=None,
+                 registry=None, reporting_interval=60, clock=None,
                  prefix='direct.', tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do direct reporter specific setup."""
         super(WavefrontDirectReporter, self).__init__(

@@ -30,22 +30,22 @@ from wavefront_pyformance import wavefront_reporter
 
 reg = pyformance.MetricsRegistry()
 
-# report metrics to a Wavefront proxy every 10s
+# report metrics to a Wavefront proxy every 60s
 wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
     host=host, port=2878, registry=reg,
     source='wavefront-pyformance-example',
     tags={'key1': 'val1', 'key2': 'val2'},
     prefix='python.proxy.',
-    reporting_interval=10)
+    reporting_interval=60)
 wf_proxy_reporter.start()
 
-# report metrics directly to a Wavefront server every 10s
+# report metrics directly to a Wavefront server every 60s
 wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
     server=server, token=token, registry=reg,
     source='wavefront-pyformance-exmaple',
     tags={'key1': 'val1', 'key2': 'val2'},
     prefix='python.direct.',
-    reporting_interval=10)
+    reporting_interval=60)
 wf_direct_reporter.start()
 ```
 #### Flush and stop Wavefront Reporter
