@@ -10,6 +10,7 @@ import wavefront_sdk
 from wavefront_sdk.entities.histogram import histogram_granularity
 
 from . import delta
+from . import runtime_metrics
 from . import wavefront_histogram
 
 try:
@@ -23,7 +24,8 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
 
     # pylint: disable=too-many-arguments
     def __init__(self, source='wavefront-pyformance', registry=None,
-                 reporting_interval=10, clock=None, prefix='', tags=None):
+                 reporting_interval=10, clock=None, prefix='', tags=None,
+                 enable_runtime_metrics=False):
         """Construct Wavefront Reporter."""
         super(WavefrontReporter, self).__init__(
             registry=registry, reporting_interval=reporting_interval,
@@ -33,6 +35,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
         self.prefix = prefix
         self.tags = tags or {}
         self.histogram_granularities = set()
+        self.enable_runtime_metrics = enable_runtime_metrics
 
     @staticmethod
     def decode_key(key):
@@ -45,6 +48,9 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
         registry = registry or self.registry
+        if self.enable_runtime_metrics:
+            col = runtime_metrics.RuntimeCollector(registry)
+            col.collect()
         metrics = registry.dump_metrics()
         for key in metrics.keys():
             metric_name, metric_tags = self.decode_key(key)
@@ -112,12 +118,12 @@ class WavefrontProxyReporter(WavefrontReporter):
     def __init__(self, host, port=2878, distribution_port=None,
                  source='wavefront-pyformance', registry=None,
                  reporting_interval=10, clock=None, prefix='proxy.',
-                 tags=None):
+                 tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do proxy reporter specific setup."""
         super(WavefrontProxyReporter, self).__init__(
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
-            tags=tags)
+            tags=tags, enable_runtime_metrics=enable_runtime_metrics)
         self.wavefront_client = wavefront_sdk.WavefrontProxyClient(
             host=host, metrics_port=port, distribution_port=distribution_port,
             tracing_port=None)
@@ -138,12 +144,12 @@ class WavefrontDirectReporter(WavefrontReporter):
     # pylint: disable=too-many-arguments
     def __init__(self, server, token, source='wavefront-pyformance',
                  registry=None, reporting_interval=10, clock=None,
-                 prefix='direct.', tags=None):
+                 prefix='direct.', tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do direct reporter specific setup."""
         super(WavefrontDirectReporter, self).__init__(
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
-            tags=tags)
+            tags=tags, enable_runtime_metrics=enable_runtime_metrics)
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000

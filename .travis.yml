@@ -1,17 +1,18 @@
-dist: xenial
+dist: bionic
 language: python
 python:
   - '2.7'
-  - '3.4'
   - '3.5'
   - '3.6'
   - '3.7'
+  - '3.8'
 install:
   - pip install pyformance
   - pip install wavefront-sdk-python
   - pip install flake8 flake8-colors flake8-docstrings flake8-import-order
   - pip install pep8-naming
   - pip install pylint
+  - pip install psutil
 before_script:
   - python -m flake8
   - python -m pylint wavefront_pyformance
