@@ -92,6 +92,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
 
     def stop(self):
         """Stop pyformance and wavefront reporter."""
+        self.report_now()
         super(WavefrontReporter, self).stop()
         self.wavefront_client.close()
 
