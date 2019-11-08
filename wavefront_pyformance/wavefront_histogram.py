@@ -110,3 +110,6 @@ class WavefrontHistogram(pyformance.meters.Histogram):
     def get_distribution(self):
         """Get Distribution."""
         return self._delegate.flush_distributions()
+
+    def get_current_minute_distribution(self):
+        return self._delegate.get_current_bin().to_distribution()
