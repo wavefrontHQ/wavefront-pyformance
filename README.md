@@ -50,9 +50,12 @@ wf_direct_reporter.start()
 ```
 #### Flush and stop Wavefront Reporter
  After create Wavefront Reporter, `start()` will make the reporter automatically reporting every `reporting_interval` seconds.
- Besides that, you can also call `report_now()` to perform reporting immediately. `report_now()` should also be called before you stop the reporter as follows:
+ Besides that, you can also call `report_now()` to perform reporting immediately.
  ```Python
+# Report immediately
 wf_reporter.report_now()
+
+# Stop Wavefront Reporter
 wf_reporter.stop()
 ```
 
