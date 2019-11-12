@@ -108,8 +108,9 @@ class WavefrontHistogram(pyformance.meters.Histogram):
         return pyformance.stats.Snapshot([0])
 
     def get_distribution(self):
-        """Get Distribution."""
+        """Get Distribution w/o current minute bin."""
         return self._delegate.flush_distributions()
 
     def get_current_minute_distribution(self):
+        """Get Distribution for the current minute bin."""
         return self._delegate.get_current_bin().to_distribution()
