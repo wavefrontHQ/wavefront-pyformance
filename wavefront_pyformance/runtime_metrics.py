@@ -27,12 +27,13 @@ class RuntimeCollector(object):
     def collect_cputimes(self):
         """Collect CPU Times."""
         cputimes = self.process.cpu_times()
-        cpu_user_mode = cputimes[0]
-        cpu_system_mode = cputimes[1]
-        self.registry.gauge("cpu.times.usermode",
-                            tags=self.custom_tags).set_value(cpu_user_mode)
-        self.registry.gauge("cpu.times.systemmode",
-                            tags=self.custom_tags).set_value(cpu_system_mode)
+        if cputimes:
+            cpu_u_mode = cputimes[0]
+            cpu_s_mode = cputimes[1]
+            self.registry.gauge("cpu.times.usermode",
+                                tags=self.custom_tags).set_value(cpu_u_mode)
+            self.registry.gauge("cpu.times.systemmode",
+                                tags=self.custom_tags).set_value(cpu_s_mode)
 
     def collect_cpupercent(self):
         """Collect CPU in Percentage."""
@@ -42,9 +43,11 @@ class RuntimeCollector(object):
 
     def collect_memoryusage(self):
         """Collect Memory Usage."""
-        memoryusage = self.process.memory_info()[0] / float(2 ** 20)
-        self.registry.gauge("memory.rss.usage",
-                            tags=self.custom_tags).set_value(memoryusage)
+        rss = self.process.memory_info()
+        if rss:
+            rssmemory = rss[0] / float(2 ** 20)
+            self.registry.gauge("memory.rss.usage",
+                                tags=self.custom_tags).set_value(rssmemory)
 
     def collect_memorypercent(self):
         """Collect Memory in Percentage."""
@@ -113,12 +116,13 @@ class RuntimeCollector(object):
     def collect_contextswitches(self):
         """Collect Context Switches."""
         ctx_switches = self.process.num_ctx_switches()
-        voluntary = ctx_switches[0]
-        involuntary = ctx_switches[1]
-        self.registry.gauge("ctxswitch.voluntary",
-                            tags=self.custom_tags).set_value(voluntary)
-        self.registry.gauge("ctxswitch.involuntary",
-                            tags=self.custom_tags).set_value(involuntary)
+        if ctx_switches:
+            voluntary = ctx_switches[0]
+            involuntary = ctx_switches[1]
+            self.registry.gauge("ctxswitch.voluntary",
+                                tags=self.custom_tags).set_value(voluntary)
+            self.registry.gauge("ctxswitch.involuntary",
+                                tags=self.custom_tags).set_value(involuntary)
 
     def collect(self):
         """All Collection Wrapper Function."""
