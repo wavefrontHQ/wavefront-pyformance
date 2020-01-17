@@ -28,8 +28,8 @@ class RuntimeCollector(object):
         """Collect CPU Times."""
         cputimes = self.process.cpu_times()
         if cputimes:
-            cpu_u_mode = cputimes[0]
-            cpu_s_mode = cputimes[1]
+            cpu_u_mode = cputimes.user
+            cpu_s_mode = cputimes.system
             self.registry.gauge("cpu.times.usermode",
                                 tags=self.custom_tags).set_value(cpu_u_mode)
             self.registry.gauge("cpu.times.systemmode",
@@ -43,17 +43,17 @@ class RuntimeCollector(object):
 
     def collect_memoryusage(self):
         """Collect Memory Usage."""
-        rss = self.process.memory_info()
-        if rss:
-            rssmemory = rss[0] / float(2 ** 20)
+        memoryinfo = self.process.memory_info()
+        if memoryinfo:
+            rssmemory = memoryinfo.rss / float(2 ** 20)
             self.registry.gauge("memory.rss.usage",
                                 tags=self.custom_tags).set_value(rssmemory)
 
     def collect_memorypercent(self):
         """Collect Memory in Percentage."""
-        memorypercent = self.process.memory_percent(memtype="rss")
+        rssmemorypercent = self.process.memory_percent(memtype="rss")
         self.registry.gauge("memory.rss.percent",
-                            tags=self.custom_tags).set_value(memorypercent)
+                            tags=self.custom_tags).set_value(rssmemorypercent)
 
     def collect_threads(self):
         """Collect Threading Metrics."""
@@ -117,8 +117,8 @@ class RuntimeCollector(object):
         """Collect Context Switches."""
         ctx_switches = self.process.num_ctx_switches()
         if ctx_switches:
-            voluntary = ctx_switches[0]
-            involuntary = ctx_switches[1]
+            voluntary = ctx_switches.voluntary
+            involuntary = ctx_switches.involuntary
             self.registry.gauge("ctxswitch.voluntary",
                                 tags=self.custom_tags).set_value(voluntary)
             self.registry.gauge("ctxswitch.involuntary",
