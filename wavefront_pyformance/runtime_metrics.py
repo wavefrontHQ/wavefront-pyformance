@@ -27,9 +27,13 @@ class RuntimeCollector(object):
     def collect_cputimes(self):
         """Collect CPU Times."""
         cputimes = self.process.cpu_times()
-        system_cpu = cputimes[1]  # system cpu
-        self.registry.gauge("cpu.times",
-                            tags=self.custom_tags).set_value(system_cpu)
+        if cputimes:
+            cpu_u_mode = cputimes.user
+            cpu_s_mode = cputimes.system
+            self.registry.gauge("cpu.times.usermode",
+                                tags=self.custom_tags).set_value(cpu_u_mode)
+            self.registry.gauge("cpu.times.systemmode",
+                                tags=self.custom_tags).set_value(cpu_s_mode)
 
     def collect_cpupercent(self):
         """Collect CPU in Percentage."""
@@ -39,15 +43,17 @@ class RuntimeCollector(object):
 
     def collect_memoryusage(self):
         """Collect Memory Usage."""
-        usage = self.process.memory_info()[0] / float(2 ** 20)
-        self.registry.gauge("memory.rss.usage",
-                            tags=self.custom_tags).set_value(usage)
+        memoryinfo = self.process.memory_info()
+        if memoryinfo:
+            rssmemory = memoryinfo.rss / float(2 ** 20)
+            self.registry.gauge("memory.rss.usage",
+                                tags=self.custom_tags).set_value(rssmemory)
 
     def collect_memorypercent(self):
         """Collect Memory in Percentage."""
-        memorypercent = self.process.memory_percent(memtype="rss")
+        rssmemorypercent = self.process.memory_percent(memtype="rss")
         self.registry.gauge("memory.rss.percent",
-                            tags=self.custom_tags).set_value(memorypercent)
+                            tags=self.custom_tags).set_value(rssmemorypercent)
 
     def collect_threads(self):
         """Collect Threading Metrics."""
@@ -68,6 +74,7 @@ class RuntimeCollector(object):
     def collect_garbage(self):
         """Collect Garbage Collection Metrics."""
         count0, count1, count2 = gc.get_count()
+        threshold0, threshold1, threshold2 = gc.get_threshold()
         object_count = len(gc.get_objects())
         referrers_count = len(gc.get_referrers())
         referents_count = len(gc.get_referents())
@@ -77,6 +84,12 @@ class RuntimeCollector(object):
                             tags=self.custom_tags).set_value(count1)
         self.registry.gauge("gc.collection.count2",
                             tags=self.custom_tags).set_value(count2)
+        self.registry.gauge("gc.threshold.threshold0",
+                            tags=self.custom_tags).set_value(threshold0)
+        self.registry.gauge("gc.threshold.threshold1",
+                            tags=self.custom_tags).set_value(threshold1)
+        self.registry.gauge("gc.threshold.threshold2",
+                            tags=self.custom_tags).set_value(threshold2)
         self.registry.gauge("gc.objects.count",
                             tags=self.custom_tags).set_value(object_count)
         self.registry.gauge("gc.referrers.count",
@@ -103,12 +116,13 @@ class RuntimeCollector(object):
     def collect_contextswitches(self):
         """Collect Context Switches."""
         ctx_switches = self.process.num_ctx_switches()
-        voluntary = ctx_switches[0]
-        involuntary = ctx_switches[1]
-        self.registry.gauge("ctxswitch.voluntary",
-                            tags=self.custom_tags).set_value(voluntary)
-        self.registry.gauge("ctxswitch.involuntary",
-                            tags=self.custom_tags).set_value(involuntary)
+        if ctx_switches:
+            voluntary = ctx_switches.voluntary
+            involuntary = ctx_switches.involuntary
+            self.registry.gauge("ctxswitch.voluntary",
+                                tags=self.custom_tags).set_value(voluntary)
+            self.registry.gauge("ctxswitch.involuntary",
+                                tags=self.custom_tags).set_value(involuntary)
 
     def collect(self):
         """All Collection Wrapper Function."""
