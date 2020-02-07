@@ -1,6 +1,6 @@
 open_source_license.txt
 
-Wavefront by VMware PyFormance SDK for Python 1.0.0 GA
+Wavefront by VMware PyFormance SDK for Python 1.1.0 GA
 
 ======================================================================
 
@@ -28,12 +28,6 @@ of the license associated with each component.
 SECTION 1: Apache License, V2.0
 
    >>> pyformance-0.4
-   >>> requests-2.18.4
-
-
-SECTION 2: BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES
-
-   >>> TDigest-0.5.2
 
 
 APPENDIX. Standard License Files
@@ -62,51 +56,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
->>> requests-2.18.4
-
-Copyright 2017 Kenneth Reitz
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
---------------- SECTION 2: BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES ----------
-
-BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES are applicable to the following component(s).
-
-
->>> TDigest-0.5.2
-
-The MIT License (MIT)
-
-Copyright (c) 2015 Cameron Davidson-Pilon
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 =============== APPENDIX. Standard License Files ============== 
 
@@ -289,7 +238,6 @@ warranty or additional liability.
 
 END OF TERMS AND CONDITIONS 
 
-
 ======================================================================
 
 To the extent any open source components are licensed under the GPL
@@ -308,4 +256,4 @@ Source Files is valid for three years from the date you acquired or last used th
 Software product. Alternatively, the Source Files may accompany the
 VMware service.
 
-[WAVEFRONTPYFORMANCESDKPYTHON100GAAB032619]
+[WAVEFRONTPYFORMANCESDKPYTHON110GAAB020720]
