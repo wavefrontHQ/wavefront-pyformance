@@ -7,6 +7,7 @@ import json
 import pyformance.reporters.reporter
 
 import wavefront_sdk
+from wavefront_sdk.common.utils import get_sem_ver
 from wavefront_sdk.entities.histogram import histogram_granularity
 
 from . import delta
@@ -27,7 +28,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
                  reporting_interval=60, clock=None, prefix='', tags=None,
                  enable_runtime_metrics=False):
         """Construct Wavefront Reporter."""
-        super(WavefrontReporter, self).__init__(
+        super().__init__(
             registry=registry, reporting_interval=reporting_interval,
             clock=clock)
         self.wavefront_client = None
@@ -61,6 +62,8 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
         :return: None
         """
         registry = registry or self.registry
+        registry.gauge('version', tags=self.tags).set_value(
+            get_sem_ver('wavefront-pyformance'))
         if self.enable_runtime_metrics:
             col = runtime_metrics.RuntimeCollector(registry)
             col.collect()
@@ -109,7 +112,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
     def stop(self):
         """Stop pyformance and wavefront reporter."""
         self._report(registry=self.registry, flush_current_hist=True)
-        super(WavefrontReporter, self).stop()
+        super().stop()
         self.wavefront_client.close()
 
     def report_minute_distribution(self):
@@ -137,7 +140,7 @@ class WavefrontProxyReporter(WavefrontReporter):
                  reporting_interval=60, clock=None, prefix='proxy.',
                  tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do proxy reporter specific setup."""
-        super(WavefrontProxyReporter, self).__init__(
+        super().__init__(
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags, enable_runtime_metrics=enable_runtime_metrics)
@@ -148,7 +151,7 @@ class WavefrontProxyReporter(WavefrontReporter):
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
         timestamp = timestamp or int(round(self.clock.time()))
-        super(WavefrontProxyReporter, self).report_now(registry, timestamp)
+        super().report_now(registry, timestamp)
 
 
 class WavefrontDirectReporter(WavefrontReporter):
@@ -163,7 +166,7 @@ class WavefrontDirectReporter(WavefrontReporter):
                  registry=None, reporting_interval=60, clock=None,
                  prefix='direct.', tags=None, enable_runtime_metrics=False):
         """Run parent __init__ and do direct reporter specific setup."""
-        super(WavefrontDirectReporter, self).__init__(
+        super().__init__(
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags, enable_runtime_metrics=enable_runtime_metrics)
@@ -184,5 +187,5 @@ class WavefrontDirectReporter(WavefrontReporter):
 
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
-        super(WavefrontDirectReporter, self).report_now(registry, timestamp)
+        super().report_now(registry, timestamp)
         self.wavefront_client.flush_now()

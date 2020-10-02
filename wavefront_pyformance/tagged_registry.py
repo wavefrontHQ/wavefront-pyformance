@@ -31,28 +31,28 @@ class TaggedRegistry(pyformance.MetricsRegistry):
     # pylint: disable=arguments-differ
     def counter(self, key, tags=None):
         """Get a counter based on a encoded key."""
-        return super(TaggedRegistry, self).counter(self.encode_key(key, tags))
+        return super().counter(self.encode_key(key, tags))
 
     # pylint: disable=arguments-differ
     def histogram(self, key, tags=None):
         """Get a histogram based on a encoded key."""
-        return super(TaggedRegistry, self).histogram(
+        return super().histogram(
             self.encode_key(key, tags))
 
     # pylint: disable=arguments-differ
     def gauge(self, key, gauge=None, default=float('nan'), tags=None):
         """Get a gauge based on a encoded key."""
-        return super(TaggedRegistry, self).gauge(
+        return super().gauge(
             self.encode_key(key, tags), gauge, default)
 
     # pylint: disable=arguments-differ
     def meter(self, key, tags=None):
         """Get a meter based on a encoded key."""
-        return super(TaggedRegistry, self).meter(self.encode_key(key, tags))
+        return super().meter(self.encode_key(key, tags))
 
     def timer(self, key, tags=None):
         """Get a timer based on a encoded key."""
-        return super(TaggedRegistry, self).timer(self.encode_key(key, tags))
+        return super().timer(self.encode_key(key, tags))
 
     def has_counter(self, key, tags=None):
         """Return True if given key matches any counters."""

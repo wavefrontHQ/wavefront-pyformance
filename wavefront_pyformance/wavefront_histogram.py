@@ -63,7 +63,7 @@ class WavefrontHistogram(pyformance.meters.Histogram):
         @param clock_millis: A function which returns timestamp.
         @type clock_millis: function
         """
-        super(WavefrontHistogram, self).__init__()
+        super().__init__()
         self._delegate = histogram_impl.WavefrontHistogramImpl(clock_millis)
 
     def add(self, value):
