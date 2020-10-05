@@ -7,6 +7,8 @@ import json
 import pyformance.reporters.reporter
 
 import wavefront_sdk
+from wavefront_sdk.common.constants import SDK_METRIC_PREFIX
+from wavefront_sdk.common.metrics.registry import WavefrontSdkMetricsRegistry
 from wavefront_sdk.common.utils import get_sem_ver
 from wavefront_sdk.entities.histogram import histogram_granularity
 
@@ -37,6 +39,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
         self.tags = tags or {}
         self.histogram_granularities = set()
         self.enable_runtime_metrics = enable_runtime_metrics
+        self._sdk_metrics_registry = None
 
     @staticmethod
     def decode_key(key):
@@ -62,8 +65,6 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
         :return: None
         """
         registry = registry or self.registry
-        registry.gauge('version', tags=self.tags).set_value(
-            get_sem_ver('wavefront-pyformance'))
         if self.enable_runtime_metrics:
             col = runtime_metrics.RuntimeCollector(registry)
             col.collect()
@@ -112,6 +113,8 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
     def stop(self):
         """Stop pyformance and wavefront reporter."""
         self._report(registry=self.registry, flush_current_hist=True)
+        if self._sdk_metrics_registry:
+            self._sdk_metrics_registry.close(timeout_secs=1)
         super().stop()
         self.wavefront_client.close()
 
@@ -138,7 +141,8 @@ class WavefrontProxyReporter(WavefrontReporter):
     def __init__(self, host, port=2878, distribution_port=None,
                  source='wavefront-pyformance', registry=None,
                  reporting_interval=60, clock=None, prefix='proxy.',
-                 tags=None, enable_runtime_metrics=False):
+                 tags=None, enable_runtime_metrics=False,
+                 enable_internal_metrics=True):
         """Run parent __init__ and do proxy reporter specific setup."""
         super().__init__(
             source=source, registry=registry,
@@ -147,6 +151,13 @@ class WavefrontProxyReporter(WavefrontReporter):
         self.wavefront_client = wavefront_sdk.WavefrontProxyClient(
             host=host, metrics_port=port, distribution_port=distribution_port,
             tracing_port=None)
+        if enable_internal_metrics:
+            self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
+                wf_metric_sender=self.wavefront_client,
+                source=source, tags=tags,
+                prefix='{}.pyformance.sender.proxy'.format(SDK_METRIC_PREFIX))
+            self._sdk_metrics_registry.new_gauge(
+                'version', lambda: get_sem_ver('wavefront-pyformance'))
 
     def report_now(self, registry=None, timestamp=None):
         """Collect metrics from registry and report them to Wavefront."""
@@ -164,7 +175,8 @@ class WavefrontDirectReporter(WavefrontReporter):
     # pylint: disable=too-many-arguments
     def __init__(self, server, token, source='wavefront-pyformance',
                  registry=None, reporting_interval=60, clock=None,
-                 prefix='direct.', tags=None, enable_runtime_metrics=False):
+                 prefix='direct.', tags=None, enable_runtime_metrics=False,
+                 enable_internal_metrics=True):
         """Run parent __init__ and do direct reporter specific setup."""
         super().__init__(
             source=source, registry=registry,
@@ -176,6 +188,13 @@ class WavefrontDirectReporter(WavefrontReporter):
         self.wavefront_client = wavefront_sdk.WavefrontDirectClient(
             self.server, token, batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
+        if enable_internal_metrics:
+            self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
+                wf_metric_sender=self.wavefront_client,
+                source=source, tags=tags,
+                prefix='{}.pyformance.sender.direct'.format(SDK_METRIC_PREFIX))
+            self._sdk_metrics_registry.new_gauge(
+                'version', lambda: get_sem_ver('wavefront-pyformance'))
 
     @staticmethod
     def _validate_url(server):  # pylint: disable=no-self-use
