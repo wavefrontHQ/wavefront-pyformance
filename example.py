@@ -15,7 +15,7 @@ def report_metrics(host, server, token):
     reg = tagged_registry.TaggedRegistry()
 
     wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
-        host=host, port=2878, registry=reg,
+        host=host, port=2878, distribution_port=2878, registry=reg,
         source='wavefront-pyformance-example',
         tags={'key1': 'val1', 'key2': 'val2'},
         prefix='python.proxy.').report_minute_distribution()
