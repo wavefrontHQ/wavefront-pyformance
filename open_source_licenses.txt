@@ -1,6 +1,6 @@
 open_source_license.txt
 
-Wavefront by VMware PyFormance SDK for Python 1.1.0 GA
+Wavefront by VMware PyFormance SDK for Python 1.2.0 GA
 
 ======================================================================
 
@@ -256,4 +256,4 @@ Source Files is valid for three years from the date you acquired or last used th
 Software product. Alternatively, the Source Files may accompany the
 VMware service.
 
-[WAVEFRONTPYFORMANCESDKPYTHON110GAAB020720]
+[WAVEFRONTPYFORMANCESDKPYTHON120GAAB020720]

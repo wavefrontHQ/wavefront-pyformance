@@ -9,7 +9,7 @@
 This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds Wavefront reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
 
 ## Requirements
-Python 2.7+ and Python 3.x are supported.
+Python 3.x are supported.
 
 ```
 pip install wavefront-pyformance
