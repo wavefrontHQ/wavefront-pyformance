@@ -11,6 +11,7 @@ from wavefront_sdk.common.constants import SDK_METRIC_PREFIX
 from wavefront_sdk.common.metrics.registry import WavefrontSdkMetricsRegistry
 from wavefront_sdk.common.utils import get_sem_ver
 from wavefront_sdk.entities.histogram import histogram_granularity
+from wavefront_sdk.client_factory import WavefrontClientFactory
 
 from . import delta
 from . import runtime_metrics
@@ -148,9 +149,11 @@ class WavefrontProxyReporter(WavefrontReporter):
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags, enable_runtime_metrics=enable_runtime_metrics)
-        self.wavefront_client = wavefront_sdk.WavefrontProxyClient(
-            host=host, metrics_port=port, distribution_port=distribution_port,
-            tracing_port=None)
+
+        client_factory = WavefrontClientFactory()
+        client_factory.add_client(url="proxy://{}:{}".format(host, port))
+        self.wavefront_client = client_factory.get_client()
+
         if enable_internal_metrics:
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
@@ -185,9 +188,14 @@ class WavefrontDirectReporter(WavefrontReporter):
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000
-        self.wavefront_client = wavefront_sdk.WavefrontDirectClient(
-            self.server, token, batch_size=self.batch_size,
+
+        client_factory = WavefrontClientFactory()
+        client_factory.add_client(
+            url="https://{}@{}".format(token, urlparse(server).hostname),
+            batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
+        self.wavefront_client = client_factory.get_client()
+
         if enable_internal_metrics:
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
