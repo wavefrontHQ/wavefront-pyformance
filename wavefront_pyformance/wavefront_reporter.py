@@ -190,8 +190,9 @@ class WavefrontDirectReporter(WavefrontReporter):
         self.batch_size = 10000
 
         client_factory = WavefrontClientFactory()
+        parse_url = urlparse(server)
         client_factory.add_client(
-            url="https://{}@{}".format(token, urlparse(server).hostname),
+            url = "{}://{}@{}".format(parse_url[0], token, parse_url[1]),
             batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
         self.wavefront_client = client_factory.get_client()
