@@ -6,12 +6,11 @@ import json
 
 import pyformance.reporters.reporter
 
-import wavefront_sdk
 from wavefront_sdk.common.constants import SDK_METRIC_PREFIX
 from wavefront_sdk.common.metrics.registry import WavefrontSdkMetricsRegistry
 from wavefront_sdk.common.utils import get_sem_ver
-from wavefront_sdk.entities.histogram import histogram_granularity
 from wavefront_sdk.client_factory import WavefrontClientFactory
+from wavefront_sdk.entities.histogram import histogram_granularity
 
 from . import delta
 from . import runtime_metrics

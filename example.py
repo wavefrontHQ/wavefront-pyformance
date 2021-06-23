@@ -12,7 +12,6 @@ from wavefront_pyformance import wavefront_reporter
 
 def report_metrics(proxy_reporter, direct_reporter):
     """Metrics Reporting Function Example."""
-
     # counter
     c_1 = reg.counter('foo_count', tags={'counter_key': 'counter_val'})
     c_1.inc()
