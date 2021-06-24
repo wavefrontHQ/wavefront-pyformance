@@ -6,10 +6,10 @@ import json
 
 import pyformance.reporters.reporter
 
+from wavefront_sdk.client_factory import WavefrontClientFactory
 from wavefront_sdk.common.constants import SDK_METRIC_PREFIX
 from wavefront_sdk.common.metrics.registry import WavefrontSdkMetricsRegistry
 from wavefront_sdk.common.utils import get_sem_ver
-from wavefront_sdk.client_factory import WavefrontClientFactory
 from wavefront_sdk.entities.histogram import histogram_granularity
 
 from . import delta
@@ -191,7 +191,7 @@ class WavefrontDirectReporter(WavefrontReporter):
         client_factory = WavefrontClientFactory()
         parse_url = urlparse(server)
         client_factory.add_client(
-            url = "{}://{}@{}".format(parse_url[0], token, parse_url[1]),
+            url="{}://{}@{}".format(parse_url[0], token, parse_url[1]),
             batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
         self.wavefront_client = client_factory.get_client()
