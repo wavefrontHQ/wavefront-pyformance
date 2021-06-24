@@ -138,7 +138,7 @@ class WavefrontProxyReporter(WavefrontReporter):
     """Requires a host and port to report data to a Wavefront proxy."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, host, port=2878, distribution_port=None,
+    def __init__(self, host, port=2878,
                  source='wavefront-pyformance', registry=None,
                  reporting_interval=60, clock=None, prefix='proxy.',
                  tags=None, enable_runtime_metrics=False,
