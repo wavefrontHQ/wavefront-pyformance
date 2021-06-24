@@ -21,7 +21,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='1.2.0',
+    version='1.2.1',
     author='Wavefront by VMware',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
@@ -46,7 +46,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=('tests',)),
     install_requires=(
         'pyformance>=0.4',
-        'wavefront-sdk-python>=1.7.4',
+        'wavefront-sdk-python>=1.8.0',
         'psutil>=5.6.3'
         )
 )

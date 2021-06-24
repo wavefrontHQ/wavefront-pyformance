@@ -10,21 +10,8 @@ from wavefront_pyformance import wavefront_histogram
 from wavefront_pyformance import wavefront_reporter
 
 
-def report_metrics(host, server, token):
+def report_metrics(proxy_reporter, direct_reporter):
     """Metrics Reporting Function Example."""
-    reg = tagged_registry.TaggedRegistry()
-
-    wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
-        host=host, port=2878, distribution_port=2878, registry=reg,
-        source='wavefront-pyformance-example',
-        tags={'key1': 'val1', 'key2': 'val2'},
-        prefix='python.proxy.').report_minute_distribution()
-    wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
-        server=server, token=token, registry=reg,
-        source='wavefront-pyformance-exmaple',
-        tags={'key1': 'val1', 'key2': 'val2'},
-        prefix='python.direct.').report_minute_distribution()
-
     # counter
     c_1 = reg.counter('foo_count', tags={'counter_key': 'counter_val'})
     c_1.inc()
@@ -59,10 +46,10 @@ def report_metrics(host, server, token):
     h_2.add(1.0)
     h_2.add(2.0)
 
-    wf_direct_reporter.report_now()
-    wf_direct_reporter.stop()
-    wf_proxy_reporter.report_now()
-    wf_proxy_reporter.stop()
+    direct_reporter.report_now()
+    direct_reporter.stop()
+    proxy_reporter.report_now()
+    proxy_reporter.stop()
 
 
 if __name__ == '__main__':
@@ -72,6 +59,21 @@ if __name__ == '__main__':
     _.add_argument('server', help='Wavefront server for direct ingestion.')
     _.add_argument('token', help='Wavefront API token.')
     ARGS = _.parse_args()
+
+    reg = tagged_registry.TaggedRegistry()
+
+    wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
+        host=ARGS.host, port=2878, registry=reg,
+        source='wavefront-pyformance-example',
+        tags={'key1': 'val1', 'key2': 'val2'},
+        prefix='python.proxy.').report_minute_distribution()
+
+    wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
+        server=ARGS.server, token=ARGS.token, registry=reg,
+        source='wavefront-pyformance-exmaple',
+        tags={'key1': 'val1', 'key2': 'val2'},
+        prefix='python.direct.').report_minute_distribution()
+
     while True:
-        report_metrics(ARGS.host, ARGS.server, ARGS.token)
+        report_metrics(wf_proxy_reporter, wf_direct_reporter)
         time.sleep(1)

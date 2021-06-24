@@ -6,7 +6,7 @@ import json
 
 import pyformance.reporters.reporter
 
-import wavefront_sdk
+from wavefront_sdk.client_factory import WavefrontClientFactory
 from wavefront_sdk.common.constants import SDK_METRIC_PREFIX
 from wavefront_sdk.common.metrics.registry import WavefrontSdkMetricsRegistry
 from wavefront_sdk.common.utils import get_sem_ver
@@ -138,7 +138,7 @@ class WavefrontProxyReporter(WavefrontReporter):
     """Requires a host and port to report data to a Wavefront proxy."""
 
     # pylint: disable=too-many-arguments
-    def __init__(self, host, port=2878, distribution_port=None,
+    def __init__(self, host, port=2878,
                  source='wavefront-pyformance', registry=None,
                  reporting_interval=60, clock=None, prefix='proxy.',
                  tags=None, enable_runtime_metrics=False,
@@ -148,9 +148,11 @@ class WavefrontProxyReporter(WavefrontReporter):
             source=source, registry=registry,
             reporting_interval=reporting_interval, clock=clock, prefix=prefix,
             tags=tags, enable_runtime_metrics=enable_runtime_metrics)
-        self.wavefront_client = wavefront_sdk.WavefrontProxyClient(
-            host=host, metrics_port=port, distribution_port=distribution_port,
-            tracing_port=None)
+
+        client_factory = WavefrontClientFactory()
+        client_factory.add_client(url="proxy://{}:{}".format(host, port))
+        self.wavefront_client = client_factory.get_client()
+
         if enable_internal_metrics:
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
@@ -185,9 +187,15 @@ class WavefrontDirectReporter(WavefrontReporter):
         self.server = self._validate_url(server)
         self.token = token
         self.batch_size = 10000
-        self.wavefront_client = wavefront_sdk.WavefrontDirectClient(
-            self.server, token, batch_size=self.batch_size,
+
+        client_factory = WavefrontClientFactory()
+        parse_url = urlparse(server)
+        client_factory.add_client(
+            url="{}://{}@{}".format(parse_url[0], token, parse_url[1]),
+            batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
+        self.wavefront_client = client_factory.get_client()
+
         if enable_internal_metrics:
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
