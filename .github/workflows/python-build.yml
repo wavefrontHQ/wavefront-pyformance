@@ -29,7 +29,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pyformance wavefront-sdk-python flake8
         python -m pip install flake8-colors flake8-docstrings flake8-import-order
-        python -m pip install pep-naming pylint psutil
+        python -m pip install pep8-naming pylint psutil
     - name: Flake8
       run: python -m flake8
     - name: Pylint
