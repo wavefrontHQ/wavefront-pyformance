@@ -37,4 +37,4 @@ jobs:
     - name: Test
       run: python -m unittest discover
     - name: Validate Version has updated
-      run: test -n "$(git diff -G version= origin/master HEAD -- setup.py)""
+      run: test -n "$(git diff -G version= origin/master HEAD -- setup.py)"
