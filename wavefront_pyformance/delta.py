@@ -59,8 +59,7 @@ def get_delta_name(prefix, name, value_key):
         ∆prefix.name.value_key
 
     """
-    return '{}{}.{}'.format(DeltaCounter.DELTA_PREFIX + prefix, name[1:],
-                            value_key)
+    return f'{DeltaCounter.DELTA_PREFIX + prefix}{name[1:]}.{value_key}'
 
 
 def _has_delta_prefix(name):
@@ -76,5 +75,5 @@ class DeltaCounter(pyformance.meters.Counter):
     every time the value is reported.
     """
 
-    DELTA_PREFIX = u'\u2206'  # '∆'
-    ALT_DELTA_PREFIX = u'\u0394'  # 'Δ'
+    DELTA_PREFIX = '\u2206'  # '∆'
+    ALT_DELTA_PREFIX = '\u0394'  # 'Δ'
