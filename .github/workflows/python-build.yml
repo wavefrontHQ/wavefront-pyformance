@@ -34,5 +34,5 @@ jobs:
     - name: Test
       run: python -m unittest discover
     - name: Validate Version was Updated in setup.py
-      if: ${{ event.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' }}
       run: test -n "$(git diff -G version= origin/master HEAD -- setup.py)"
