@@ -21,8 +21,8 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='1.2.1',
-    author='Wavefront by VMware',
+    version='1.2.2',
+    author='Tanzu Observability by Wavefront',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
     license='Apache-2.0',
@@ -36,11 +36,11 @@ setuptools.setup(
         ],
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10'
         ],
     include_package_data=True,
     packages=setuptools.find_packages(exclude=('tests',)),

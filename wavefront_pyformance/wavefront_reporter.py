@@ -84,7 +84,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
                         wf_hist.get_current_minute_distribution())
                 for dist in distributions:
                     self.wavefront_client.send_distribution(
-                        name='{}{}'.format(self.prefix, metric_name),
+                        name=f'{self.prefix}{metric_name}',
                         centroids=dist.centroids,
                         histogram_granularities=self.histogram_granularities,
                         timestamp=dist.timestamp,
@@ -105,8 +105,7 @@ class WavefrontReporter(pyformance.reporters.reporter.Reporter):
                     registry.counter(key).dec(metrics[key][value_key])
                 else:
                     self.wavefront_client.send_metric(
-                        name='{}{}.{}'.format(self.prefix, metric_name,
-                                              value_key),
+                        name=f'{self.prefix}{metric_name}.{value_key}',
                         value=metrics[key][value_key], timestamp=timestamp,
                         source=self.source, tags=tags)
 
@@ -150,14 +149,14 @@ class WavefrontProxyReporter(WavefrontReporter):
             tags=tags, enable_runtime_metrics=enable_runtime_metrics)
 
         client_factory = WavefrontClientFactory()
-        client_factory.add_client(url="proxy://{}:{}".format(host, port))
+        client_factory.add_client(url=f"proxy://{host}:{port}")
         self.wavefront_client = client_factory.get_client()
 
         if enable_internal_metrics:
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
                 source=source, tags=tags,
-                prefix='{}.pyformance.sender.proxy'.format(SDK_METRIC_PREFIX))
+                prefix=f'{SDK_METRIC_PREFIX}.pyformance.sender.proxy')
             self._sdk_metrics_registry.new_gauge(
                 'version', lambda: get_sem_ver('wavefront-pyformance'))
 
@@ -191,7 +190,7 @@ class WavefrontDirectReporter(WavefrontReporter):
         client_factory = WavefrontClientFactory()
         parse_url = urlparse(server)
         client_factory.add_client(
-            url="{}://{}@{}".format(parse_url[0], token, parse_url[1]),
+            url=f"{parse_url[0]}://{token}@{parse_url[1]}",
             batch_size=self.batch_size,
             flush_interval_seconds=reporting_interval)
         self.wavefront_client = client_factory.get_client()
@@ -200,7 +199,7 @@ class WavefrontDirectReporter(WavefrontReporter):
             self._sdk_metrics_registry = WavefrontSdkMetricsRegistry(
                 wf_metric_sender=self.wavefront_client,
                 source=source, tags=tags,
-                prefix='{}.pyformance.sender.direct'.format(SDK_METRIC_PREFIX))
+                prefix=f'{SDK_METRIC_PREFIX}.pyformance.sender.direct')
             self._sdk_metrics_registry.new_gauge(
                 'version', lambda: get_sem_ver('wavefront-pyformance'))
 
