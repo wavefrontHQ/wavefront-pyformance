@@ -9,6 +9,6 @@ on:
 
 jobs:
   call_linters_n_tests:
-    uses: wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@master
+    uses: wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@austinov/rebranding
     with:
       env_yml: ./.github/workflows/env.yml
