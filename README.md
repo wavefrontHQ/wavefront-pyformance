@@ -1,10 +1,10 @@
 # wavefront-pyformance
 
-[![image](https://img.shields.io/pypi/v/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
-[![image](https://img.shields.io/pypi/l/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
-[![image](https://img.shields.io/pypi/pyversions/wavefront-pyformance.svg)](https://pypi.org/project/wavefront-pyformance/)
-[![travis build status](https://travis-ci.com/wavefrontHQ/wavefront-pyformance.svg?branch=master)](https://travis-ci.com/wavefrontHQ/wavefront-pyformance)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/wavefront-pyformance)
+[![GitHub Actions](https://github.com/wavefrontHQ/wavefront-pyformance/actions/workflows/main.yml/badge)](https://github.com/wavefrontHQ/wavefront-pyformance/actions)
+[![PyPI - Python Versions](https://img.shields.io/pypi/pyversions/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
+[![PyPI - License](https://img.shields.io/pypi/l/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
+[![PyPI - Version](https://img.shields.io/pypi/v/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 
 
 This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds VMware Aria Operations for Applications (formerly known as Wavefront) reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
