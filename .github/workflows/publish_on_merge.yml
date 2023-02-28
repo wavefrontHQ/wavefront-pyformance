@@ -1,0 +1,14 @@
+name: Upload Python Package Onto TestPyPI
+
+on:
+  push:
+    branches:
+      - $default-branch
+
+jobs:
+  publish_on_merge:
+    uses:
+      wavefrontHQ/wavefront-sdk-python/.github/workflows/publish_on_merge.yml
+    with:
+      env_yml:
+        ./.github/workflows/env.yml
