@@ -8,7 +8,7 @@ on:
 jobs:
   publish_on_merge:
     uses:
-      wavefrontHQ/wavefront-sdk-python/.github/workflows/publish_on_merge.yml
+      wavefrontHQ/wavefront-sdk-python/.github/workflows/publish_on_merge.yml@master
     with:
       env_yml:
         ./.github/workflows/env.yml

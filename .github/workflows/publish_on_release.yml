@@ -8,7 +8,7 @@ on:
 jobs:
   publish_on_release:
     uses:
-      wavefrontHQ/wavefront-sdk-python/.github/workflows/publish_on_release.yml
+      wavefrontHQ/wavefront-sdk-python/.github/workflows/publish_on_release.yml@master
     with:
       env_yml:
         ./.github/workflows/env.yml

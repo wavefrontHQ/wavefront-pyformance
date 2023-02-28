@@ -1,6 +1,6 @@
 # wavefront-pyformance
 
-[![GitHub Actions](https://github.com/wavefrontHQ/wavefront-pyformance/actions/workflows/main.yml/badge)](https://github.com/wavefrontHQ/wavefront-pyformance/actions)
+[![GitHub Actions](https://github.com/wavefrontHQ/wavefront-pyformance/actions/workflows/main.yml/badge.svg)](https://github.com/wavefrontHQ/wavefront-pyformance/actions)
 [![PyPI - Python Versions](https://img.shields.io/pypi/pyversions/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 [![PyPI - License](https://img.shields.io/pypi/l/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 [![PyPI - Version](https://img.shields.io/pypi/v/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
