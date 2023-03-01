@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/env.yml
   debug:
     needs: setenv
+    runs-on: ubuntu-latest
     steps:
       - run: echo "package_name: ${{ needs.setenv.output.package_name }}"
       - run: echo "requirements: ${{ needs.setenv.output.requirements }}"
