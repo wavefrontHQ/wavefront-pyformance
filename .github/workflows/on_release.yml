@@ -1,4 +1,4 @@
-name: Publish the Package onto PyPI
+name: Publish the Package onto PyPI on Release
 
 on:
   release:

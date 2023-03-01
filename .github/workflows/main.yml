@@ -10,6 +10,11 @@ on:
 jobs:
   setenv:
     uses: ./.github/workflows/env.yml
+  debug:
+    needs: setenv
+    steps:
+      - run: echo "package_name: ${{ needs.setenv.output.package_name }}"
+      - run: echo "requirements: ${{ needs.setenv.output.requirements }}"
   linters_n_tests:
     needs: setenv
     uses:

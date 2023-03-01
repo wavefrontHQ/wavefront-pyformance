@@ -1,4 +1,4 @@
-name: Upload Python Package Onto TestPyPI
+name: Upload Python Package Onto TestPyPI on Merge
 
 on:
   push:
@@ -8,6 +8,11 @@ on:
 jobs:
   setenv:
     uses: ./.github/workflows/env.yml
+  debug:
+    needs: setenv
+    steps:
+      - run: echo "package_name: ${{ needs.setenv.output.package_name }}"
+      - run: echo "requirements: ${{ needs.setenv.output.requirements }}"
   publish_on_merge:
     needs: setenv
     uses:
