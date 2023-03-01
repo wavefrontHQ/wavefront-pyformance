@@ -8,6 +8,12 @@ on:
       - $default-branch
 
 jobs:
+  setenv:
+    uses: ./.github/workflows/env.yml
   linters_n_tests:
+    needs: setenv
     uses:
       wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@austinov/rebranding
+    with:
+      package_name: ${{ needs.setenv.output.package_name }}
+      requirements: ${{ needs.setenv.output.requirements }}

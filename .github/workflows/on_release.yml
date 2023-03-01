@@ -6,6 +6,13 @@ on:
       - published
 
 jobs:
+  setenv:
+    uses: ./.github/workflows/env.yml
   publish_on_release:
+    needs: setenv
     uses:
       wavefrontHQ/wavefront-sdk-python/.github/workflows/on_release.yml@master
+    with:
+      package_name: ${{ needs.setenv.output.package_name }}
+      requirements: ${{ needs.setenv.output.requirements }}
+
