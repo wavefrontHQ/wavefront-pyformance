@@ -1,0 +1,11 @@
+name: Publish the Package onto PyPI
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish_on_release:
+    uses:
+      wavefrontHQ/wavefront-sdk-python/.github/workflows/on_release.yml@master
