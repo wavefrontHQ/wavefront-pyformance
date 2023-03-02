@@ -9,7 +9,8 @@ on:
 
 jobs:
   setenv:
-    uses: ./.github/workflows/env.yml
+    uses:
+      wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@austinov/rebranding
   linters_n_tests:
     needs: setenv
     uses:

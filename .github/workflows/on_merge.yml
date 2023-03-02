@@ -7,12 +7,8 @@ on:
 
 jobs:
   setenv:
-    uses: ./.github/workflows/env.yml
-  debug:
-    needs: setenv
-    steps:
-      - run: echo "package_name: ${{ needs.setenv.output.package_name }}"
-      - run: echo "requirements: ${{ needs.setenv.output.requirements }}"
+    uses: 
+      wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@master
   publish_on_merge:
     needs: setenv
     uses:
