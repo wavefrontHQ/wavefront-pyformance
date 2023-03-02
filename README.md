@@ -7,7 +7,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 
 
-This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds VMware Aria Operations for Applications (formerly known as Wavefront) reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
+This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds VMware Aria Operations™ for Applications (formerly known as Wavefront) reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
 
 ## Requirements
 Python 3.x are supported.
