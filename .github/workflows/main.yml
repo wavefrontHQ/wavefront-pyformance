@@ -11,7 +11,7 @@ jobs:
   setenv:
     uses:
       wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@austinov/rebranding
-  linters_n_tests:
+  lint_n_test:
     needs: setenv
     uses:
       wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@austinov/rebranding

@@ -1,9 +1,9 @@
 # wavefront-pyformance
 
 [![GitHub Actions](https://github.com/wavefrontHQ/wavefront-pyformance/actions/workflows/main.yml/badge.svg)](https://github.com/wavefrontHQ/wavefront-pyformance/actions)
-[![PyPI - Python Versions](https://img.shields.io/pypi/pyversions/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
-[![PyPI - License](https://img.shields.io/pypi/l/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 [![PyPI - Version](https://img.shields.io/pypi/v/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
+[![PyPI - License](https://img.shields.io/pypi/l/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
+[![PyPI - Python Versions](https://img.shields.io/pypi/pyversions/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/wavefront-pyformance)](https://pypi.org/project/wavefront-pyformance)
 
 
@@ -22,7 +22,7 @@ pip install wavefront-pyformance
 
 The Wavefront Reporters support tagging at the host level. Tags passed to a reporter will be applied to every metric before being sent to Wavefront.
 
-#### Create Wavefront Reporter
+#### Create a Reporter
 You can create a `WavefrontProxyReporter` or `WavefrontDirectReporter` as follows:
 
 ```Python
@@ -33,23 +33,31 @@ reg = pyformance.MetricsRegistry()
 
 # report metrics to a Wavefront proxy every 60s
 wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
-    host=host,
-    port=2878,
-    registry=reg,
-    source='wavefront-pyformance-example',
+    host=host,  # required
+    port=2878,  # default: 2878
+    source='wavefront-pyformance-example',  # default: 'wavefront-pyformance'
+    registry=reg,  # default: None
+    reporting_interval=60,  # default: 60
+    prefix='python.proxy.',  # default: 'proxy.'
     tags={'key1': 'val1',
           'key2': 'val2'},
-    prefix='python.proxy.',
-    reporting_interval=60)
+    enable_runtime_metrics: False,  # default: False
+    enable_internal_metrics: True)  # default: True
 wf_proxy_reporter.start()
 
 # report metrics directly to a Wavefront server every 60s
 wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
-    server=server, token=token, registry=reg,
-    source='wavefront-pyformance-exmaple',
-    tags={'key1': 'val1', 'key2': 'val2'},
-    prefix='python.direct.',
-    reporting_interval=60)
+    server=server,  # required
+    token=token,  # required
+    source='wavefront-pyformance-example',  # default: 'wavefront-pyformance'
+    registry=reg,  # default: None
+    reporting_interval=60,  # default: 60
+    clock=None,  # default: None
+    prefix='python.direct.',  # default: 'direct.'
+    tags={'key1': 'val1',
+          'key2': 'val2'},  # default: None
+    enable_runtime_metrics=False,  # default: False
+    enable_internal_metrics=False)  # default: False
 wf_direct_reporter.start()
 ```
 #### Flush and stop Wavefront Reporter
@@ -94,20 +102,27 @@ h_0.add(10)
 
 ### Python Runtime Metrics
 
-To enable Python runtime metrics reporting, set the `enable_runtime_metrics` flag to True:
+To enable Python runtime metrics reporting, 
+set the `enable_runtime_metrics` flag to `True`:
 
 ```Python
     wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
-        host=host, port=2878, registry=reg,
+        host=host,
+        port=2878,
+        registry=reg,
         source='runtime-metric-test',
-        tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
+        tags={'global_tag1': 'val1',
+              'global_tag2': 'val2'},
         prefix='python.proxy.',
         enable_runtime_metrics=True).report_minute_distribution()
 
     wf_direct_reporter = wavefront_reporter.WavefrontDirectReporter(
-        server=server, token=token, registry=reg,
+        server=server,
+        token=token,
+        registry=reg,
         source='runtime-metric-test',
-        tags={'global_tag1': 'val1', 'global_tag2': 'val2'},
+        tags={'global_tag1': 'val1',
+              'global_tag2': 'val2'},
         prefix='python.direct.',
         enable_runtime_metrics=True).report_minute_distribution()
 ```
