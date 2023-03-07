@@ -33,9 +33,12 @@ reg = pyformance.MetricsRegistry()
 
 # report metrics to a Wavefront proxy every 60s
 wf_proxy_reporter = wavefront_reporter.WavefrontProxyReporter(
-    host=host, port=2878, registry=reg,
+    host=host,
+    port=2878,
+    registry=reg,
     source='wavefront-pyformance-example',
-    tags={'key1': 'val1', 'key2': 'val2'},
+    tags={'key1': 'val1',
+          'key2': 'val2'},
     prefix='python.proxy.',
     reporting_interval=60)
 wf_proxy_reporter.start()
