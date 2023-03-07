@@ -16,5 +16,5 @@ jobs:
     uses:
       wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@austinov/rebranding
     with:
-      package_name: ${{ needs.setenv.output.package_name }}
-      requirements: ${{ needs.setenv.output.requirements }}
+      package_name: ${{ needs.setenv.outputs.package_name }}
+      requirements: ${{ needs.setenv.outputs.requirements }}
