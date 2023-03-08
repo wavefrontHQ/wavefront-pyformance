@@ -9,6 +9,8 @@
 
 This is a plugin for [pyformance](https://github.com/omergertel/pyformance) which adds VMware Aria Operations™ for Applications (formerly known as Wavefront) reporters (via proxy or direct ingestion) and an abstraction that supports tagging at the host level. It also includes support for Wavefront delta counters.
 
+Note: We're in the process of updating the product name to Operations for Applications, but in many places we still refer to it as Wavefront.
+
 ## Requirements
 Python 3.x are supported.
 
