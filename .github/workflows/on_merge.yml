@@ -3,7 +3,7 @@ name: Upload Python Package Onto TestPyPI on Merge
 on:
   push:
     branches:
-      - $default-branch
+      - master
 
 jobs:
   setenv:  # set the parameters to be used by the reused workflow below.
