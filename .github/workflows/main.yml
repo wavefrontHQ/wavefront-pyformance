@@ -10,11 +10,11 @@ on:
 jobs:
   setenv:
     uses:
-      wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@austinov/rebranding
+      wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@master
   lint_n_test:
     needs: setenv
     uses:
-      wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@austinov/rebranding
+      wavefrontHQ/wavefront-sdk-python/.github/workflows/main.yml@master
     with:
       package_name: ${{ needs.setenv.outputs.package_name }}
       requirements: ${{ needs.setenv.outputs.requirements }}
