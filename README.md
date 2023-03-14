@@ -22,7 +22,9 @@ pip install wavefront-pyformance
 
 ### Wavefront Reporter
 
-The Wavefront Reporters support tagging at the host level. Tags passed to a reporter will be applied to every metric before being sent to Wavefront.
+The Wavefront Reporters support tagging at the host level. If you pass a tag through a reporter, the reporter tags the metrics before sending the metrics to our service.
+
+
 
 #### Create a Reporter
 You can create a `WavefrontProxyReporter` or `WavefrontDirectReporter` as follows:

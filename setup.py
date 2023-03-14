@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
-"""Aria Operations for Applications Pyformance Library.
+"""VMware Aria Operations for Applications Pyformance Library.
 
 The Operations for Applications Pyformance library provides
 Wavefront reporters (via proxy and direct ingestion) and a
