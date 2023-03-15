@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # coding: utf-8
-"""Wavefront Pyformance Library.
+"""VMware Aria Operations for Applications Pyformance Library.
 
-The Wavefront Pyformance library provides Wavefront reporters
-(via proxy and direct ingestion) and a simple abstraction for
-tagging at the host level.
+The Operations for Applications Pyformance library provides
+Wavefront reporters (via proxy and direct ingestion) and a
+simple abstraction for tagging at the host level.
 It also includes support for Wavefront delta counters.
 """
 
@@ -21,26 +21,39 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='1.2.2',
-    author='Tanzu Observability by Wavefront',
+    version='1.2.3',
+    author='VMware Aria Operations for Applications Team',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
     license='Apache-2.0',
-    description='Wavefront Pyformance Library',
+    description='VMware Aria Operations for Applications Pyformance Library',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
     keywords=[
+        'Distributed Tracing',
+        'Logging',
+        'Metrics',
+        'Monitoring',
+        'Observability',
         'PyFormance',
+        'Tracing',
         'Wavefront',
         'Wavefront Pyformance'
         ],
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Information Technology',
+        'Intended Audience :: System Administrators',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10'
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: System :: Monitoring',
+        'Topic :: System :: Networking :: Monitoring'
         ],
     include_package_data=True,
     packages=setuptools.find_packages(exclude=('tests',)),

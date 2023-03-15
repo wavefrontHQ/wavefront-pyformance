@@ -204,7 +204,7 @@ class WavefrontDirectReporter(WavefrontReporter):
                 'version', lambda: get_sem_ver('wavefront-pyformance'))
 
     @staticmethod
-    def _validate_url(server):  # pylint: disable=no-self-use
+    def _validate_url(server):
         """Validate URL of server."""
         parsed_url = urlparse(server)
         if not all((parsed_url.scheme, parsed_url.netloc)):
