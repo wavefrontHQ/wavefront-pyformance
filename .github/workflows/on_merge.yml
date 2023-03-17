@@ -11,6 +11,7 @@ jobs:
       wavefrontHQ/wavefront-pyformance/.github/workflows/env.yml@master
   publish_on_merge:
     needs: setenv
+    secrets: inherit
     uses:
       wavefrontHQ/wavefront-sdk-python/.github/workflows/on_merge.yml@master
     with:
