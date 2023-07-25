@@ -115,7 +115,12 @@ class RuntimeCollector(object):
 
     def collect_contextswitches(self):
         """Collect Context Switches."""
-        ctx_switches = self.process.num_ctx_switches()
+        try:
+            ctx_switches = self.process.num_ctx_switches()
+        except NotImplementedError:
+            # some platforms do not expose ctx switches information, this is ok
+            ctx_switches = None
+
         if ctx_switches:
             voluntary = ctx_switches.voluntary
             involuntary = ctx_switches.involuntary

@@ -21,7 +21,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setuptools.setup(
     name='wavefront-pyformance',
-    version='1.2.3',  # Please increment with every Pull Request.
+    version='1.2.4',  # Please increment with every Pull Request.
     author='VMware Aria Operations for Applications Team',
     author_email='chitimba@wavefront.com',
     url='https://github.com/wavefrontHQ/wavefront-pyformance',
@@ -46,7 +46,6 @@ setuptools.setup(
         'Intended Audience :: Information Technology',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
